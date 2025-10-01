@@ -12,19 +12,12 @@ class SideBarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width:700,
-      height: 700,
+      width:300,
+      height: 900,
       decoration: BoxDecoration(
         color: Appstyle.blanc,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Appstyle.gris.withOpacity(0.3),
-            spreadRadius: 4,
-            blurRadius: 12,
-            offset: const Offset(0, 6),
-          ),
-        ],
+
       ),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(10,5,6,5),

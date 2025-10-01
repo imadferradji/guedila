@@ -23,12 +23,12 @@ class AppRouter {
         builder: (context, state) => const SignUpPage(),
       ),
       GoRoute(
-        path: '/',
-        builder: (context, state) => const DashboardPage(),
+        path: '/dashboard',
+        builder: (context, state) =>  DashboardPage(),
       ),
       GoRoute(
-        path: '/commande',
-        builder: (context, state) => const CommandePage(),
+        path: '/',
+        builder: (context, state) =>  CommandePage(),
       ),
       GoRoute(
         path: '/document',
