@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/screens/AboutYou.dart';
+import 'AboutYou.dart';
 
 class PhoneValidation extends StatelessWidget {
   const PhoneValidation({super.key});

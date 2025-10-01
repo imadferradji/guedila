@@ -8,8 +8,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
@@ -17,10 +15,50 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Portail Client',
       theme: ThemeData(
-        primarySwatch: Colors.blue
-
+        primarySwatch: Colors.blue,
       ),
+      builder: (context, child) {
+        // On insère le container responsive comme wrapper global
+        return Scaffold(
+          body: Center(
+            child: ResponsiveContainer(), // 👈 notre widget
+          ),
+        );
+      },
     );
   }
 }
 
+class ResponsiveContainer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    double screenWidth = size.width;
+    double screenHeight = size.height;
+
+    // Responsive par défaut
+    double containerWidth = screenWidth * 0.5;
+    double containerHeight = screenHeight * 0.5;
+
+    // Si l’écran est petit (<1200x800) → taille fixe
+    if (screenWidth < 1200 || screenHeight < 800) {
+      containerWidth = 600;
+      containerHeight = 400;
+    }
+
+    return Container(
+      width: containerWidth,
+      height: containerHeight,
+      decoration: BoxDecoration(
+        color: Colors.blueAccent,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: const Center(
+        child: Text(
+          "Container Responsive",
+          style: TextStyle(color: Colors.white, fontSize: 22),
+        ),
+      ),
+    );
+  }
+}

@@ -19,15 +19,15 @@ class Appstyle
 
 
 
-  static TextStyle textS =  TextStyle(fontFamily:'NunitoSans',fontSize: 16,fontWeight: FontWeight.w400);
-  static TextStyle textM =  TextStyle(fontFamily:'NunitoSans',fontSize: 20,fontWeight: FontWeight.w400);
-  static TextStyle textL =  TextStyle(fontFamily:'NunitoSans',fontSize: 26,fontWeight: FontWeight.w400);
-  static TextStyle textXL =  TextStyle(fontFamily:'NunitoSans',fontSize: 34,fontWeight: FontWeight.w400);
+  static TextStyle textS =  TextStyle(fontFamily:'NunitoSans',fontSize: 14,fontWeight: FontWeight.w400);
+  static TextStyle textM =  TextStyle(fontFamily:'NunitoSans',fontSize: 18,fontWeight: FontWeight.w400);
+  static TextStyle textL =  TextStyle(fontFamily:'NunitoSans',fontSize: 22,fontWeight: FontWeight.w400);
+  static TextStyle textXL =  TextStyle(fontFamily:'NunitoSans',fontSize: 30,fontWeight: FontWeight.w400);
 
-  static TextStyle textS_B =  TextStyle(fontFamily:'NunitoSans',fontSize: 16,fontWeight: FontWeight.w700);
-  static TextStyle textM_B =  TextStyle(fontFamily:'NunitoSans',fontSize: 20,fontWeight: FontWeight.w700);
-  static TextStyle textL_B =  TextStyle(fontFamily:'NunitoSans',fontSize: 26,fontWeight: FontWeight.w700);
-  static TextStyle textXL_B =  TextStyle(fontFamily:'NunitoSans',fontSize: 34,fontWeight: FontWeight.w700);
+  static TextStyle textS_B =  TextStyle(fontFamily:'NunitoSans',fontSize: 14,fontWeight: FontWeight.w700);
+  static TextStyle textM_B =  TextStyle(fontFamily:'NunitoSans',fontSize: 18,fontWeight: FontWeight.w700);
+  static TextStyle textL_B =  TextStyle(fontFamily:'NunitoSans',fontSize: 22,fontWeight: FontWeight.w700);
+  static TextStyle textXL_B =  TextStyle(fontFamily:'NunitoSans',fontSize: 30,fontWeight: FontWeight.w700);
 
 
 
