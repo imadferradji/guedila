@@ -1,129 +1,210 @@
-import 'package:flutter/material.dart';
-import 'package:qanaty/core/theme/app_style.dart';
-import 'package:qanaty/core/widget/facture_widget.dart';
-import 'package:qanaty/core/widget/facture_widget_plus_imprimer.dart';
-import 'package:qanaty/core/widget/produit_vendu_widget.dart';
-import 'package:qanaty/core/widget/side_bar_widget.dart';
-import 'package:qanaty/core/widget/solde_widget.dart';
-import 'package:qanaty/core/widget/virement_widget.dart';
 
-import '../../core/widget/acount_widget.dart';
-import '../../core/widget/commander_produit_dialog.dart';
-import '../../core/widget/main_button.dart';
-import '../../core/widget/periode_selector.dart';
+import 'package:flutter/material.dart';
+import 'package:qanaty/core/utilis/responsive.dart';
+import 'package:qanaty/core/widget/acount_widget.dart';
+import 'package:qanaty/core/widget/main_button.dart';
+import 'package:qanaty/core/widget/periode_selector.dart';
+import 'package:qanaty/core/widget/side_bar_widget.dart';
+
+import '../../core/theme/app_style.dart';
+import '../../core/widget/facture_widget.dart';
+import '../../core/widget/produit_vendu_widget.dart';
 import '../../core/widget/search_field.dart';
+import '../../core/widget/solde_widget.dart';
+import '../../data/models/produi.dart';
 
 class CommandePage extends StatefulWidget {
-  const CommandePage({super.key});
-
+  final String username="Oussama Bensbaa";
+  final List<Produit> produits = [
+    Produit(
+      nom: "Bouteille 1.5 L",
+      image: "assets/icons/eau_15l_icon.png",
+      bouteillesParPalette: 100,
+      prix: 22800,
+    ),
+    Produit(
+      nom: "Bouteille 1 L",
+      image: "assets/icons/eau_1l_icon.png",
+      bouteillesParPalette: 120,
+      prix: 18000,
+    ),
+    Produit(
+      nom: "Bouteille 2 L",
+      image: "assets/icons/eau_2l_icon.png",
+      bouteillesParPalette: 80,
+      prix: 25000,
+    ),
+    Produit(
+      nom: "Bouteille 0.33 Cl",
+      image: "assets/icons/eau_33l_icon.png",
+      bouteillesParPalette: 80,
+      prix: 25000,
+    ),
+    Produit(
+      nom: "Bouteille 0.33 L Sport",
+      image: "assets/icons/eau_33l_sport_icon.png",
+      bouteillesParPalette: 80,
+      prix: 25000,
+    ),
+    Produit(
+      nom: "Bouteille 0.5 L Sport",
+      image: "assets/icons/eau_05l_sport_icon.png",
+      bouteillesParPalette: 80,
+      prix: 25000,
+    ),
+  ];
+  CommandePage({Key? key}) : super(key: key);
   @override
   State<CommandePage> createState() => _CommandePage();
 }
 
 class _CommandePage extends State<CommandePage> {
+
   final TextEditingController _controller = TextEditingController();
-  String _text = "";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Appstyle.bluebg,
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: 1, // sidebar
-                child: SideBarWidget(),
-              ),
-              const SizedBox(width: 20),
-              Expanded(
-                flex: 5,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+      body: LayoutBuilder(
+        builder:(context, constraints) {
+          final screenWidth = constraints.maxWidth;
+          final screenHeight = constraints.maxHeight;
+          const minWidth = 1200.0;
+          const minHeight = 900.0;
+
+          final adjustedWidth = screenWidth < minWidth ? minWidth : screenWidth;
+          final adjustedHeight = screenHeight < minHeight ? minHeight : screenHeight;
+          final paddingV=  adjustedHeight*0.03;
+          final paddingH=  adjustedWidth*0.03;
+
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(
+                  minWidth: minWidth,
+                  minHeight: minHeight,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: SizedBox(
+                    width: adjustedWidth,
+                    height: adjustedHeight,
+                    child: Row(
+
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        AccountWidget(name: "Imad Ferradji", imageUrl: "assets/success.png",),
-                        SizedBox(width: 30,),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        SizedBox(width: 20,),
-                        Text("Commande", style: Appstyle.textXL_B,),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        SoldeWidget(solde: "750000.00", dernier_modif: "12/05/2025"),
-                        SizedBox(width: 30,),
-                      ],
-                    ),
-                    SizedBox(height: 40,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        PeriodSelector(),
-                        SizedBox(width: 295,),
-                        MainButton(
-                          text: "Ajouter",
-                          color: Appstyle.rose,
-                          onPressed: () {
-                            debugPrint("Bouton rose pressé !");
-                          },
-                        ),
-                        SizedBox(width: 30,),
-                      ],
-                    ),
-                    SizedBox(height: 40,),
-                    Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 30),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              child: Row(
+                        // SIde bar
+                        Container(
+                            width:Responsive.sidebarWidth(adjustedWidth),
+                            height:Responsive.sidebarHeight(adjustedHeight),
+                            child: SideBarWidget()
+                        )
+                        ,
+                        SizedBox(width: paddingH,),
+                        Expanded(
+                          child: Column(
+                            children: [
+                              Row (
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  SizedBox(width: 20,),
-                                  Text("Mes Commande" ,style: Appstyle.textL_B,),
+                                  Spacer(),
+                                  IconButton(
+                                    icon: Image.asset(
+                                      "assets/icons/notifications_icon.png",
+                                      width: Responsive.notificationSize(adjustedWidth),
+                                      height: Responsive.notificationSize(adjustedWidth),
+                                      fit: BoxFit.contain,
+                                    ),
+                                    onPressed: () {
+                                    },
+                                  ),
+                                  AccountWidget(name: "Oussama Bensbaa", imageUrl: "assets/images/support.png"),
+                                  SizedBox(width: 16,),
                                 ],
                               ),
-                            ),
-                            SizedBox(
-                              width: 400,
-                              child:
-                              SearchField(controller: _controller),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("Commande", style:Appstyle.textXL_B.copyWith(color: Appstyle.noir)),
+                                  SoldeWidget(solde: "130204050.00 DA",dernier_modif :"24/02/2025"),
+                                ],
+                              ),
+                              SizedBox(height: paddingV,),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  SizedBox(width: 1,),
+                                  PeriodSelector(),
+                                  MainButton(text: "Nouveau", color: Appstyle.rose, onPressed: (){}),
+                                ],
+                              ),
+                              SizedBox(height: paddingV,),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("Mes commande", style: Appstyle.textL_B,),
+                                    SizedBox(
+                                      width: 412,
+                                      child:  SearchField(controller: _controller,),
+                                    )
 
-                            ),
-                          ],
-                        ),
+                                  ],
+                              ),SizedBox(height: paddingV,),
+                            Container(
+                              width: double.infinity,
+                              height: adjustedHeight*0.5,
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
+                                    SizedBox(height: 10,),
+                                    FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
+                                    SizedBox(height: 10,),
+                                    FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
+                                    SizedBox(height: 10,),
+                                    FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
+                                    SizedBox(height: 10,),
+                                    FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
+                                    SizedBox(height: 10,),
+                                    FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
+                                    SizedBox(height: 10,),
+                                    FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
+                                    SizedBox(height: 10,),
+                                    FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
+                                    SizedBox(height: 10,),
+                                    FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
+                                    SizedBox(height: 10,),
+                                    FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
+                                    SizedBox(height: 10,),
+                                    FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
+                                    SizedBox(height: 10,),
+                                    FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
+                                    SizedBox(height: 10,),
+                                    FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
+
+                                  ],
+                                  ),
+                              ),
+                            )
+
+
+                            ],
+
+
+                          ),
+                        )
+                      ],
+
                     ),
-                    SizedBox(height: 40,),
-                    Column(
-                      children: [
-                        FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
-                        SizedBox(height: 20,),
-                        FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
-                        SizedBox(height: 20,),
-                        FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
-                        SizedBox(height: 20,),
-                      ]
-                    ),
-                  ],
+                  ),
                 ),
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }

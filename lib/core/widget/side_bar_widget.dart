@@ -13,36 +13,32 @@ class SideBarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height-25,
+      height: MediaQuery.of(context).size.height,
       decoration: BoxDecoration(
         color: Appstyle.blanc,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Appstyle.gris.withOpacity(0.3),
-            spreadRadius: 4,
-            blurRadius: 12,
-            offset: const Offset(0, 6),
-          ),
-        ],
+
       ),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(10,5,6,5),
-        child: Row(
+
+        child: Column(
+
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
 
-
-            SizedBox(width: 20,),
-            Column(
+             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Image.asset(
+                Center(
+                  child: Image.asset(
                   "assets/icons/qanaty_icon.png",
                   width: 100,
                   height: 100,
                   fit: BoxFit.contain,
-                ),
+                ),),
+
                 SizedBox(height: 40,),
                 IconTextRow(
                   iconPath: "assets/icons/dashboard_icon.png",
@@ -78,28 +74,31 @@ class SideBarWidget extends StatelessWidget {
                   iconSize: 28,
                   textStyle: Appstyle.textM_B.copyWith(color: Appstyle.grisC),
                 ),
-                SizedBox(height: 320,),
-                Column(
-                  children: [
-                    Image.asset(
-                      "assets/images/Support.png",
-                      width: 150,
-                      height: 150,
-                      fit: BoxFit.contain,
-                    ),
-                    SizedBox(height: 20,),
-                    Image.asset(
-                      "assets/icons/log_out_icon.png",
-                      width: 70,
-                      height: 70,
-                      fit: BoxFit.contain,
-                    ),
-                  ],
+                SizedBox(height: 120,),
+
+
+
+
+              ],
+            ),
+            Column(
+              children: [
+                Image.asset(
+                  "assets/images/Support.png",
+                  width: 150,
+                  height: 150,
+                  fit: BoxFit.contain,
+                ),
+                SizedBox(height: 20,),
+                Image.asset(
+                  "assets/icons/log_out_icon.png",
+                  width: 70,
+                  height: 70,
+                  fit: BoxFit.contain,
                 ),
               ],
             ),
-            SizedBox(width: 20,),
-         ],
+          ],
         ),
       ),
     );

@@ -50,6 +50,8 @@ List<Produit> produits = [
 Map<Produit, int> panier = {};
 bool palette = false;
 double prix_palette=10000.00;
+double solde=100000.00;
+bool commande_confirme=false;
 
 /// Fonction pour afficher le Dialog
 void showNouvelleCommandeDialog(BuildContext context) {
@@ -87,10 +89,8 @@ class CommanderProduitDialog extends StatefulWidget {
 
 class _CommanderProduitDialog extends State<CommanderProduitDialog> {
   int currentStep = 0;
-
   // Données étape 1
   int currentIndex = 0;
-
   // ✅ Déclaration du contrôleur pour le carrousel
   late PageController _pageController;
 
@@ -124,27 +124,52 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
             Expanded(child: _buildStepContent()),
             Row(
               children: [
-                if (currentStep > 0)
+                // Afficher le bouton retour seulement si on est entre step 1 et 2
+                if (currentStep > 0 && currentStep < 3)
                   TextButton(
                     onPressed: () => setState(() => currentStep--),
                     child: const Text("← Retour"),
                   ),
-                const Spacer(),
-                MainButton(
-                  text: "Suivant",
-                  icon: Icons.arrow_forward,
-                  iconOnRight: true,
-                  color: Appstyle.rose,
-                  onPressed: () {
-                    if (currentStep < 2) {
-                      setState(() => currentStep++);
-                    } else {
-                      Navigator.pop(context);
-                    }
-                  },
-                ),
+
+                // Si currentStep == 3 → bouton centré Terminer
+                if (currentStep == 3)
+                  Expanded(
+                    child: Center(
+                      child: MainButton(
+                        text: "Terminer",
+                        icon: Icons.check,
+                        iconOnRight: true,
+                        color: Appstyle.rose,
+                        onPressed: () {
+                          Navigator.pop(context); // ferme la fenêtre ou revient à l'accueil
+                        },
+                      ),
+                    ),
+                  )
+                else ...[
+                  const Spacer(),
+                  MainButton(
+                    text: currentStep == 2 ? "Payer" : "Suivant",
+                    icon: Icons.arrow_forward,
+                    iconOnRight: true,
+                    color: Appstyle.rose,
+                    onPressed: () {
+                      if (currentStep < 2) {
+                        setState(() => currentStep++);
+                      } else if (currentStep == 2) {
+                        setState(() => currentStep++);
+                        if (solde >= totalCommande) {
+                          commande_confirme = true;
+                        } else {
+                          commande_confirme = false;
+                        }
+                      }
+                    },
+                  ),
+                ],
               ],
-            ),
+            )
+
           ],
         ),
       ),
@@ -160,6 +185,8 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
         return _buildStep2Palette();
       case 2:
         return _buildStep3Confirmation();
+      case 3:
+        return _buildStep4Confirmation();
       default:
         return SizedBox.shrink();
     }
@@ -589,7 +616,7 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
             ),
             const SizedBox(height: 20),
             SizedBox(
-              height: 200, // limite la hauteur
+              height: 260, // limite la hauteur
               child: SingleChildScrollView(
                 child: Column(
                   children: panier.entries.map((entry) {
@@ -657,6 +684,8 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
 
           ],
         ),
+        const SizedBox(height: 10),
+
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -664,6 +693,7 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
+
                 Text(
                   "Total de commande:",
                   style: Appstyle.textM_B.copyWith(color: Appstyle.gris),
@@ -674,6 +704,38 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
                   style: Appstyle.textM_B.copyWith(color: Appstyle.blueF),
                 ),
               ],
+            ),
+          ],
+        ),
+      ],
+    );
+
+  }
+
+  /// Étape 4 : Message
+  Widget _buildStep4Confirmation() {
+    Produit produit = produits[currentIndex];
+
+    return Column(
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text(
+             commande_confirme?"Commande confirmé":"Commande echoué",
+              style: Appstyle.textS_B.copyWith(color: Appstyle.noir),
+            ),
+            const SizedBox(height: 120),
+            Text(
+              commande_confirme?"Votre commande est bien confirmé !!":"Solde client insufisant !!",
+              style: Appstyle.textS_B.copyWith(color: Appstyle.noir),
+            ),
+            const SizedBox(height:40),
+            Image.asset(
+              commande_confirme?"assets/icons/nike_icon.png":"assets/icons/croix_icon.png",
+              width: 150,
+              height: 150,
+              fit: BoxFit.contain,
             ),
           ],
         ),

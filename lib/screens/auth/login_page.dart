@@ -5,6 +5,7 @@ import 'package:qanaty/core/widget/facture_widget_plus_imprimer.dart';
 import 'package:qanaty/core/widget/produit_vendu_widget.dart';
 import 'package:qanaty/core/widget/side_bar_widget.dart';
 import 'package:qanaty/core/widget/solde_widget.dart';
+import 'package:qanaty/core/widget/virement_dialog.dart';
 import 'package:qanaty/core/widget/virement_widget.dart';
 
 import '../../core/widget/acount_widget.dart';
@@ -91,6 +92,14 @@ class _LoginPageState extends State<LoginPage> {
                       color: Appstyle.rose,
                       onPressed: () {
                         showNouvelleCommandeDialog(context);
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    MainButton(
+                      text: "Virement",
+                      color: Appstyle.rose,
+                      onPressed: () {
+                        showNouvelleVirementDialog(context);
                       },
                     ),
 

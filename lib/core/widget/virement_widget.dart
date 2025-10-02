@@ -19,7 +19,7 @@ class VirementWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 280,
-      height: 170,
+      height: 250,
       decoration: BoxDecoration(
         color: Appstyle.blanc,
         borderRadius: BorderRadius.circular(16),

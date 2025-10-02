@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:qanaty/router.dart';
 import 'package:qanaty/screens/auth/login_page.dart';
 import 'package:qanaty/screens/commande/commande_page.dart';
+import 'package:qanaty/screens/document/document_page.dart';
+import 'package:qanaty/screens/virement/virement_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -23,7 +25,7 @@ class MyApp extends StatelessWidget {
         // On insère le container responsive comme wrapper global
         return Scaffold(
           body: Center(
-            child: CommandePage(), // 👈 notre widget
+            child: DocumentPage(), // 👈 notre widget
           ),
         );
       },
