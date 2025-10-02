@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:untitled/screens/Compte.dart';
-
+import 'Compte.dart';
 import 'PhoneValidation.dart';
 
 class AboutYou extends StatelessWidget {

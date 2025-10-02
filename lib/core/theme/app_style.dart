@@ -3,6 +3,7 @@ class Appstyle
 {
   static Color blueC = const Color(0XFF40BDF0);
   static Color blueF = const Color(0XFF408CFE);
+  static Color bluebg = const Color(0xFFF4F9FD);
 
   static Color rose = const Color(0XFFF482D2);
 
@@ -27,7 +28,7 @@ class Appstyle
   static TextStyle textS_B =  TextStyle(fontFamily:'NunitoSans',fontSize: 16,fontWeight: FontWeight.w700);
   static TextStyle textM_B =  TextStyle(fontFamily:'NunitoSans',fontSize: 20,fontWeight: FontWeight.w700);
   static TextStyle textL_B =  TextStyle(fontFamily:'NunitoSans',fontSize: 26,fontWeight: FontWeight.w700);
-  static TextStyle textXL_B =  TextStyle(fontFamily:'NunitoSans',fontSize: 34,fontWeight: FontWeight.w700);
+  static TextStyle textXL_B =  TextStyle(fontFamily:'NunitoSans',fontSize: 34,fontWeight: FontWeight.bold);
 
 
 
