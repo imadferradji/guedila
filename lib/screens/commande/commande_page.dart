@@ -6,49 +6,11 @@ import 'package:qanaty/core/widget/periode_selector.dart';
 import 'package:qanaty/core/widget/side_bar_widget.dart';
 
 import '../../core/theme/app_style.dart';
-import '../../data/models/produi.dart';
+import '../../data/models/produit.dart';
 
 class CommandePage extends StatefulWidget {
   final String username="Oussama Bensbaa";
-  final List<Produit> produits = [
-    Produit(
-      nom: "Bouteille 1.5 L",
-      image: "assets/icons/eau_15l_icon.png",
-      bouteillesParPalette: 100,
-      prix: 22800,
-    ),
-    Produit(
-      nom: "Bouteille 1 L",
-      image: "assets/icons/eau_1l_icon.png",
-      bouteillesParPalette: 120,
-      prix: 18000,
-    ),
-    Produit(
-      nom: "Bouteille 2 L",
-      image: "assets/icons/eau_2l_icon.png",
-      bouteillesParPalette: 80,
-      prix: 25000,
-    ),
-    Produit(
-      nom: "Bouteille 0.33 Cl",
-      image: "assets/icons/eau_33l_icon.png",
-      bouteillesParPalette: 80,
-      prix: 25000,
-    ),
-    Produit(
-      nom: "Bouteille 0.33 L Sport",
-      image: "assets/icons/eau_33l_sport_icon.png",
-      bouteillesParPalette: 80,
-      prix: 25000,
-    ),
-    Produit(
-      nom: "Bouteille 0.5 L Sport",
-      image: "assets/icons/eau_05l_sport_icon.png",
-      bouteillesParPalette: 80,
-      prix: 25000,
-    ),
-  ];
-  CommandePage({Key? key}) : super(key: key);
+ CommandePage({Key? key}) : super(key: key);
 
   @override
   State<CommandePage> createState() => _CommandePageState();

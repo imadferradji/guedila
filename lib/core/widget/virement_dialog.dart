@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qanaty/core/theme/app_style.dart';
 import 'package:qanaty/core/widget/main_button.dart';
 import 'package:qanaty/core/widget/virement_widget.dart';
-import '../../data/models/produi.dart';
+import '../../data/models/produit.dart';
 import '../../data/models/virement.dart';
 
 

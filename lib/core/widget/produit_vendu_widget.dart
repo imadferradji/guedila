@@ -4,11 +4,13 @@ import 'package:qanaty/core/theme/app_style.dart';
 class ProduitVenduWidget extends StatelessWidget {
   final String produit; // Exemple : "0.33Cl"
   final String value;   // Exemple : "181 Palette"
+  final Color color;   // Exemple : "181 Palette"
 
   const ProduitVenduWidget({
     super.key,
     required this.produit,
     required this.value,
+    required this.color,
   });
 
   @override
@@ -31,7 +33,7 @@ class ProduitVenduWidget extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
-                color: Appstyle.blueF, // couleur harmonisée
+                color: color, // couleur harmonisée
                 width: 3,
               ),
             ),

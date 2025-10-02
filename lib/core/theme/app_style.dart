@@ -18,6 +18,15 @@ class Appstyle
   static Color gold = const Color(0XFFFFB400);
   static Color noir = const Color(0XFF0A1629);
 
+  static Color pie_move = const Color(0XFF8979FF);
+  static Color pie_creme = const Color(0XFFFF928A);
+  static Color pie_blueC = const Color(0XFF3CC3DF);
+  static Color pie_orange = const Color(0XFFFFAE4C);
+  static Color pie_blueF = const Color(0XFF537FF1);
+  static Color pie_grena = const Color(0XFFAB0053);
+  static Color pie_vert = const Color(0XFF18CD69);
+
+
 
 
   static TextStyle textS =  TextStyle(fontFamily:'NunitoSans',fontSize: 14,fontWeight: FontWeight.w400);

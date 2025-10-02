@@ -4,49 +4,12 @@ import 'package:qanaty/core/widget/main_button.dart';
 import 'package:qanaty/core/widget/palette_selectionne.dart';
 import 'package:qanaty/core/widget/produit_selectionne.dart';
 
-import '../../data/models/produi.dart';
+import '../../data/models/produit.dart';
+import '../../data/produits.dart';
 
 /// Modèle Produit
 
 /// Exemple de produits
-List<Produit> produits = [
-  Produit(
-    nom: "Bouteille 1.5 L",
-    image: "assets/icons/eau_15l_icon.png",
-    bouteillesParPalette: 100,
-    prix: 22800,
-  ),
-  Produit(
-    nom: "Bouteille 1 L",
-    image: "assets/icons/eau_1l_icon.png",
-    bouteillesParPalette: 120,
-    prix: 18000,
-  ),
-  Produit(
-    nom: "Bouteille 2 L",
-    image: "assets/icons/eau_2l_icon.png",
-    bouteillesParPalette: 80,
-    prix: 25000,
-  ),
-  Produit(
-    nom: "Bouteille 0.33 Cl",
-    image: "assets/icons/eau_33l_icon.png",
-    bouteillesParPalette: 80,
-    prix: 25000,
-  ),
-  Produit(
-    nom: "Bouteille 0.33 L Sport",
-    image: "assets/icons/eau_33l_sport_icon.png",
-    bouteillesParPalette: 80,
-    prix: 25000,
-  ),
-  Produit(
-    nom: "Bouteille 0.5 L Sport",
-    image: "assets/icons/eau_05l_sport_icon.png",
-    bouteillesParPalette: 80,
-    prix: 25000,
-  ),
-];
 Map<Produit, int> panier = {};
 bool palette = false;
 double prix_palette=10000.00;

@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:qanaty/core/theme/app_style.dart';
 import 'package:qanaty/core/widget/facture_widget.dart';
 import 'package:qanaty/core/widget/facture_widget_plus_imprimer.dart';
-import 'package:qanaty/core/widget/produit_vendu_widget.dart';
 import 'package:qanaty/core/widget/side_bar_widget.dart';
 import 'package:qanaty/core/widget/solde_widget.dart';
 import 'package:qanaty/core/widget/virement_dialog.dart';
 import 'package:qanaty/core/widget/virement_widget.dart';
-
 import '../../core/widget/acount_widget.dart';
 import '../../core/widget/commander_produit_dialog.dart';
 import '../../core/widget/main_button.dart';
@@ -42,9 +40,7 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     SearchField(controller: _controller),
                     const SizedBox(height: 16),
-                    ProduitVenduWidget(value: "181 Palette", produit: "0.33"),
-                    const SizedBox(height: 16),
-                    PeriodSelector(),
+                   PeriodSelector(),
                     const SizedBox(height: 16),
                     MainButton(
                       text: "Ajouter",
