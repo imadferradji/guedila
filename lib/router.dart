@@ -12,7 +12,7 @@ import 'package:qanaty/screens/virement/virement_page.dart';
 
 class AppRouter {
   static final router = GoRouter(
-    initialLocation: '/login', // Écran par défaut au démarrage
+    initialLocation: '/', // Écran par défaut au démarrage
     routes: [
       GoRoute(
         path: '/login',
@@ -23,12 +23,12 @@ class AppRouter {
         builder: (context, state) => const SignUpPage(),
       ),
       GoRoute(
-        path: '/',
-        builder: (context, state) => const DashboardPage(),
+        path: '/dashboard',
+        builder: (context, state) =>  DashboardPage(),
       ),
       GoRoute(
-        path: '/commande',
-        builder: (context, state) => const CommandePage(),
+        path: '/',
+        builder: (context, state) =>  CommandePage(),
       ),
       GoRoute(
         path: '/document',

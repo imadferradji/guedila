@@ -19,14 +19,7 @@ class ProduitVenduWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: Appstyle.blanc,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Appstyle.gris.withOpacity(0.3),
-            spreadRadius: 4,
-            blurRadius: 12,
-            offset: const Offset(0, 6),
-          ),
-        ],
+
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
