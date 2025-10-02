@@ -4,7 +4,6 @@ import 'package:qanaty/core/widget/acount_widget.dart';
 import 'package:qanaty/core/widget/main_button.dart';
 import 'package:qanaty/core/widget/periode_selector.dart';
 import 'package:qanaty/core/widget/side_bar_widget.dart';
-
 import '../../core/theme/app_style.dart';
 import '../../core/widget/produit_vendu_widget.dart';
 import '../../data/models/produi.dart';
