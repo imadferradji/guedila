@@ -11,7 +11,7 @@ import '../../core/widget/facture_widget.dart';
 import '../../core/widget/facture_widget_plus_imprimer.dart';
 import '../../core/widget/search_field.dart';
 import '../../core/widget/solde_widget.dart';
-import '../../data/models/produi.dart';
+import '../../data/models/produit.dart';
 
 class DocumentPage extends StatefulWidget {
   final String username="Oussama Bensbaa";
@@ -21,36 +21,50 @@ class DocumentPage extends StatefulWidget {
       image: "assets/icons/eau_15l_icon.png",
       bouteillesParPalette: 100,
       prix: 22800,
+      abrev: "1.5L", color: Appstyle.pie_creme,
+
+    ), Produit(
+      nom: "Bouteille 0.5 L",
+      image: "assets/icons/eau_15l_icon.png",
+      bouteillesParPalette: 100,
+      prix: 22800,
+      abrev: "0.5L", color: Appstyle.pie_orange,
+
     ),
     Produit(
       nom: "Bouteille 1 L",
       image: "assets/icons/eau_1l_icon.png",
       bouteillesParPalette: 120,
       prix: 18000,
+      abrev: "1L", color: Appstyle.pie_blueC,
     ),
     Produit(
       nom: "Bouteille 2 L",
       image: "assets/icons/eau_2l_icon.png",
       bouteillesParPalette: 80,
       prix: 25000,
+      abrev: "2L", color: Appstyle.pie_blueF,
     ),
     Produit(
       nom: "Bouteille 0.33 Cl",
       image: "assets/icons/eau_33l_icon.png",
       bouteillesParPalette: 80,
       prix: 25000,
+      abrev: "0.33L", color: Appstyle.pie_move,
     ),
     Produit(
       nom: "Bouteille 0.33 L Sport",
       image: "assets/icons/eau_33l_sport_icon.png",
       bouteillesParPalette: 80,
       prix: 25000,
+      abrev: "0.33L S", color: Appstyle.pie_grena,
     ),
     Produit(
       nom: "Bouteille 0.5 L Sport",
       image: "assets/icons/eau_05l_sport_icon.png",
       bouteillesParPalette: 80,
       prix: 25000,
+      abrev: "0.5L S", color: Appstyle.pie_vert,
     ),
   ];
   DocumentPage({Key? key}) : super(key: key);
@@ -61,11 +75,11 @@ class DocumentPage extends StatefulWidget {
 class _DocumentPage extends State<DocumentPage> {
 
   final TextEditingController _controller = TextEditingController();
-  final bool facSide=true;
+  final bool facSide=false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Appstyle.bluebg,
+      backgroundColor: Appstyle.blueSC,
       body: LayoutBuilder(
         builder:(context, constraints) {
           final screenWidth = constraints.maxWidth;
@@ -158,6 +172,7 @@ class _DocumentPage extends State<DocumentPage> {
                                 ],
                               )
                               ,SizedBox(height: 40,),
+                              facSide ?
                               Container(
                                 width: double.infinity,
                                 height: adjustedHeight*0.5,
@@ -193,8 +208,42 @@ class _DocumentPage extends State<DocumentPage> {
                                     ],
                                   ),
                                 ),
-                              ),
-                              SizedBox(height: 30,),
+                              ):
+                              Container(
+                                width: double.infinity,
+                                height: adjustedHeight*0.5,
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                children: [
+                                  FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
+                                  SizedBox(height: 10,),
+                                  FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
+                                  SizedBox(height: 10,),
+                                  FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
+                                  SizedBox(height: 10,),
+                                  FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
+                                  SizedBox(height: 10,),
+                                  FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
+                                  SizedBox(height: 10,),
+                                  FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
+                                  SizedBox(height: 10,),
+                                  FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
+                                  SizedBox(height: 10,),
+                                  FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
+                                  SizedBox(height: 10,),
+                                  FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
+                                  SizedBox(height: 10,),
+                                  FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
+                                  SizedBox(height: 10,),
+                                  FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
+                                  SizedBox(height: 10,),
+                                  FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
+                                  SizedBox(height: 10,),
+                                  FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
+
+                                ],
+                              ),),),
+                              SizedBox(height: 40,),
                               facSide
                                   ? Container(
                               )

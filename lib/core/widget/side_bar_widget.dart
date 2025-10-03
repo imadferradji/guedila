@@ -1,106 +1,126 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:qanaty/core/theme/app_style.dart';
 
-import 'icon_text_widget.dart';
-
 class SideBarWidget extends StatelessWidget {
-
-  const SideBarWidget({
-    super.key,
-  });
+  const SideBarWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
-      decoration: BoxDecoration(
-        color: Appstyle.blanc,
-        borderRadius: BorderRadius.circular(16),
+    final router = GoRouter.of(context);
 
-      ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(10,5,6,5),
+    return ValueListenableBuilder<RouteInformation?>(
+      valueListenable: router.routeInformationProvider,
+      builder: (context, routeInfo, child) {
+        final String currentRoute = routeInfo?.uri.path ?? "/";
 
-        child: Column(
+        Widget buildMenuItem({
+          required String iconPath,
+          required String text,
+          required String route,
+        }) {
+          final bool isActive = currentRoute == route;
 
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
+          return InkWell(
+            onTap: () => context.go(route),
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              margin: const EdgeInsets.symmetric(vertical: 6),
+              padding:
+              const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+              decoration: BoxDecoration(
+                color: isActive ? Appstyle.blueC : Colors.transparent,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: [
+                  Image.asset(
+                    iconPath,
+                    width: 28,
+                    height: 28,
+                    color: isActive ? Colors.white : Appstyle.grisC,
+                  ),
+                  const SizedBox(width: 16),
+                  Text(
+                    text,
+                    style: Appstyle.textM_B.copyWith(
+                      color: isActive ? Colors.white : Appstyle.grisC,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
 
-             Column(
-              mainAxisAlignment: MainAxisAlignment.start,
+        return Container(
+          width: 260,
+          decoration: BoxDecoration(
+            color: Appstyle.blanc,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 16, 10, 16),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Logo
                 Center(
                   child: Image.asset(
-                  "assets/icons/qanaty_icon.png",
-                  width: 100,
-                  height: 100,
-                  fit: BoxFit.contain,
-                ),),
+                    "assets/icons/qanaty_icon.png",
+                    width: 100,
+                    height: 100,
+                  ),
+                ),
+                const SizedBox(height: 40),
 
-                SizedBox(height: 40,),
-                IconTextRow(
-                  iconPath: "assets/icons/dashboard_icon.png",
-                  text: "Dashboard",
-                  iconSize: 28,
-                  textStyle: Appstyle.textM_B.copyWith(color: Appstyle.gris),
-                ),
-                SizedBox(height: 20,),
-                IconTextRow(
-                  iconPath: "assets/icons/commande_icon.png",
-                  text: "Commande",
-                  iconSize: 28,
-                  textStyle: Appstyle.textM_B.copyWith(color: Appstyle.grisC),
-                ),
-                SizedBox(height: 20,),
-                IconTextRow(
-                  iconPath: "assets/icons/virement_icon.png",
-                  text: "Viremement",
-                  iconSize: 28,
-                  textStyle: Appstyle.textM_B.copyWith(color: Appstyle.grisC),
-                ),
-                SizedBox(height: 20,),
-                IconTextRow(
-                  iconPath: "assets/icons/document_icon.png",
-                  text: "Document",
-                  iconSize: 28,
-                  textStyle: Appstyle.textM_B.copyWith(color: Appstyle.grisC),
-                ),
-                SizedBox(height: 20,),
-                IconTextRow(
-                  iconPath: "assets/icons/profile_icon.png",
-                  text: "Profile",
-                  iconSize: 28,
-                  textStyle: Appstyle.textM_B.copyWith(color: Appstyle.grisC),
-                ),
-                SizedBox(height: 120,),
+                // ✅ Menu Items
+                buildMenuItem(
+                    iconPath: "assets/icons/dashboard_icon.png",
+                    text: "Dashboard",
+                    route: "/"),
+                buildMenuItem(
+                    iconPath: "assets/icons/commande_icon.png",
+                    text: "Commande",
+                    route: "/commande"),
+                buildMenuItem(
+                    iconPath: "assets/icons/virement_icon.png",
+                    text: "Virement",
+                    route: "/virement"),
+                buildMenuItem(
+                    iconPath: "assets/icons/document_icon.png",
+                    text: "Document",
+                    route: "/document"),
+                buildMenuItem(
+                    iconPath: "assets/icons/profile_icon.png",
+                    text: "Profile",
+                    route: "/profile"),
 
+                const Spacer(),
 
-
-
-              ],
-            ),
-            Column(
-              children: [
-                Image.asset(
-                  "assets/images/Support.png",
-                  width: 150,
-                  height: 150,
-                  fit: BoxFit.contain,
+                // Support
+                Center(
+                  child: Image.asset(
+                    "assets/images/Support.png",
+                    width: 140,
+                    height: 140,
+                  ),
                 ),
-                SizedBox(height: 20,),
-                Image.asset(
-                  "assets/icons/log_out_icon.png",
-                  width: 70,
-                  height: 70,
-                  fit: BoxFit.contain,
+                const SizedBox(height: 20),
+
+                // Logout
+                Center(
+                  child: Image.asset(
+                    "assets/icons/log_out_icon.png",
+                    width: 60,
+                    height: 60,
+                  ),
                 ),
               ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

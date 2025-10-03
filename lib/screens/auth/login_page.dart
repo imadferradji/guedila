@@ -42,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     SearchField(controller: _controller),
                     const SizedBox(height: 16),
-                    ProduitVenduWidget(value: "181 Palette", produit: "0.33"),
+                    ProduitVenduWidget(value: "181 Palette", produit: "0.33",),
                     const SizedBox(height: 16),
                     PeriodSelector(),
                     const SizedBox(height: 16),

@@ -23,11 +23,11 @@ class AppRouter {
         builder: (context, state) => const SignUpPage(),
       ),
       GoRoute(
-        path: '/dashboard',
+        path: '/',
         builder: (context, state) =>  DashboardPage(),
       ),
       GoRoute(
-        path: '/',
+        path: '/commande',
         builder: (context, state) =>  CommandePage(),
       ),
       GoRoute(
@@ -41,7 +41,7 @@ class AppRouter {
 
       GoRoute(
         path: '/profile',
-        builder: (context, state) => const ProfilePage(),
+        builder: (context, state) => ProfilePage(),
       ),
     ],
   );
