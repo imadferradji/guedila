@@ -87,7 +87,6 @@ class _LoginPageState extends State<LoginPage> {
                       text: "Ajouter",
                       color: Appstyle.rose,
                       onPressed: () {
-                        showNouvelleCommandeDialog(context);
                       },
                     ),
                     const SizedBox(height: 16),

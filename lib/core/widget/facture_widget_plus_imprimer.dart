@@ -24,7 +24,7 @@ class FactureImprimerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 1200,
+      width: 1600,
       height: 80,
       decoration: BoxDecoration(
         color: Appstyle.blanc,
@@ -32,9 +32,9 @@ class FactureImprimerWidget extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: Appstyle.gris.withOpacity(0.3),
-            spreadRadius: 4,
-            blurRadius: 12,
-            offset: const Offset(0, 6),
+            spreadRadius: 1,
+            blurRadius: 2,
+            offset: const Offset(0, 2),
           ),
         ],
       ),

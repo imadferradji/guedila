@@ -20,11 +20,25 @@ class FactureWidget extends StatelessWidget {
     required this.date,
     required this.etat,
   });
+  Color getEtatColor(String etat) {
+    switch (etat) {
+      case "Permis":
+        return Appstyle.gris;
+      case "Validé":
+        return Appstyle.vert;
+      case "Livrée":
+        return Appstyle.blueC;
+      case "En attente":
+        return Appstyle.gold;
+      default:
+        return Appstyle.gris; // couleur par défaut
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 1200,
+      width: 1600,
       height: 80,
       decoration: BoxDecoration(
         color: Appstyle.grisSC,
@@ -32,9 +46,9 @@ class FactureWidget extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: Appstyle.gris.withOpacity(0.3),
-            spreadRadius: 4,
-            blurRadius: 12,
-            offset: const Offset(0, 6),
+            spreadRadius: 1,
+            blurRadius: 2,
+            offset: const Offset(0, 1),
           ),
         ],
       ),
@@ -109,24 +123,24 @@ class FactureWidget extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                 ],),
-                Container(
-                  width: 120,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: Appstyle.gold,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Center(
-                    child: Text(
-                      "En attente", // "0.33Cl"
-                      style: Appstyle.textM_B.copyWith(color: Appstyle.blanc),
-                    ),
-                  ),
-
+            Container(
+              width: 120,
+              height: 40,
+              decoration: BoxDecoration(
+                color: getEtatColor(etat),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Center(
+                child: Text(
+                  etat,
+                  style: Appstyle.textM_B.copyWith(color: Appstyle.blanc),
                 ),
+              ),
+            ),
 
 
-              ],
+
+          ],
             ),
 
       ),

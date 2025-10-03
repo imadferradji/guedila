@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:qanaty/router.dart';
+import 'package:qanaty/router.dart' show AppRouter;
 
 void main() {
+
   runApp(const MyApp());
+
 }
 
 class MyApp extends StatelessWidget {
@@ -17,12 +19,6 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      builder: (context, child) {
-        // ✅ ici on met le child fourni par GoRouter
-        return Scaffold(
-          body: child,
-        );
-      },
     );
   }
 }

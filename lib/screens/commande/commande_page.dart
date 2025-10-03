@@ -4,29 +4,35 @@ import 'package:qanaty/core/widget/acount_widget.dart';
 import 'package:qanaty/core/widget/main_button.dart';
 import 'package:qanaty/core/widget/periode_selector.dart';
 import 'package:qanaty/core/widget/side_bar_widget.dart';
-
 import '../../core/theme/app_style.dart';
-import '../../data/models/produit.dart';
+import '../../core/widget/commander_produit_dialog.dart';
+import '../../core/widget/facture_widget.dart';
+import '../../core/widget/search_field.dart';
+import '../../core/widget/solde_widget.dart';
+import '../../core/widget/virement_dialog.dart';
 
 class CommandePage extends StatefulWidget {
   final String username="Oussama Bensbaa";
- CommandePage({Key? key}) : super(key: key);
+  final double solde=100000.00;
 
+
+  CommandePage({Key? key}) : super(key: key);
   @override
-  State<CommandePage> createState() => _CommandePageState();
+  State<CommandePage> createState() => _CommandePage();
 }
 
-class _CommandePageState extends State<CommandePage> {
+class _CommandePage extends State<CommandePage> {
+
+  final TextEditingController _controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Appstyle.blueSC,
       body: LayoutBuilder(
-        builder: (context, constraints) {
+        builder:(context, constraints) {
           final screenWidth = constraints.maxWidth;
           final screenHeight = constraints.maxHeight;
-
-          // ✅ Taille minimale imposée
           const minWidth = 1200.0;
           const minHeight = 900.0;
 
@@ -60,15 +66,11 @@ class _CommandePageState extends State<CommandePage> {
                             child: SideBarWidget()
                         )
                         ,
-
                         SizedBox(width: paddingH,),
-
-                        // MAinDASH
-
                         Expanded(
                           child: Column(
                             children: [
-                              // Notification & Compte
+
                               Row (
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
@@ -81,35 +83,94 @@ class _CommandePageState extends State<CommandePage> {
                                       fit: BoxFit.contain,
                                     ),
                                     onPressed: () {
-                                      // action
                                     },
                                   ),
-                                  AccountWidget(name: "Oussama Bensbaa", imageUrl: "assets/images/support.png")
+                                  AccountWidget(name: "Oussama Bensbaa", imageUrl: "assets/images/support.png"),
+                                  SizedBox(width: 16,),
                                 ],
-
-
                               ),
-                              // Text
 
-                              Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Text("Commande", style:Appstyle.textXL_B.copyWith(color: Appstyle.noir))),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("Commande", style:Appstyle.textXL_B.copyWith(color: Appstyle.noir)),
+                                  SoldeWidget(solde: solde.toString()+".00 DA",dernier_modif :"24/02/2025"),
+                                ],
+                              ),
+
                               SizedBox(height: paddingV,),
-                              // Periode & NEW Periode
 
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   SizedBox(width: 1,),
                                   PeriodSelector(),
-                                  MainButton(text: "Ajouter", color: Appstyle.rose, onPressed: (){})
+                                  MainButton(text: "Nouveau", color: Appstyle.rose,
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        barrierDismissible: true, // empêche de fermer en cliquant dehors
+                                        barrierColor: Appstyle.blueF.withOpacity(0.3), // 👈 ici tu changes la couleur du fond
+                                        builder: (context) {
+                                          return CommanderProduitDialog(solde: widget.solde); // ton popup
+                                        },
+                                      );
+                                    },
 
+                                  ),
                                 ],
-
                               ),
+
                               SizedBox(height: paddingV,),
 
-                              // Mes Commande ** Search_Bar
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("Mes commande", style: Appstyle.textL_B,),
+                                  SizedBox(
+                                    width: 412,
+                                    child:  SearchField(controller: _controller,),
+                                  )
+
+                                ],
+                              ),SizedBox(height: paddingV,),
+
+                              Container(
+                                width: double.infinity,
+                                height: adjustedHeight*0.5,
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    children: [
+                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "Livrée"),
+                                      SizedBox(height: 15,),
+                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
+                                      SizedBox(height: 15,),
+                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
+                                      SizedBox(height: 15,),
+                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "Permis"),
+                                      SizedBox(height: 15,),
+                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "Permis"),
+                                      SizedBox(height: 15,),
+                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "Livrée"),
+                                      SizedBox(height: 15,),
+                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "Validé"),
+                                      SizedBox(height: 15,),
+                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "Livrée"),
+                                      SizedBox(height: 15,),
+                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "Livrée"),
+                                      SizedBox(height: 15,),
+                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "Validé"),
+                                      SizedBox(height: 15,),
+                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "Permis"),
+                                      SizedBox(height: 15,),
+                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "Permis"),
+                                      SizedBox(height: 15,),
+                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
+
+                                    ],
+                                  ),
+                                ),
+                              )
 
 
                             ],
@@ -120,7 +181,6 @@ class _CommandePageState extends State<CommandePage> {
                       ],
 
                     ),
-
                   ),
                 ),
               ),

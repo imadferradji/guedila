@@ -107,8 +107,8 @@ class SideBarWidget extends StatelessWidget {
             Center(
               child: Image.asset(
                 "assets/icons/log_out_icon.png",
-                width: 60,
-                height: 60,
+                width: 90,
+                height: 70,
               ),
             ),
           ],
