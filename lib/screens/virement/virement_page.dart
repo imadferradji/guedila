@@ -1,73 +1,16 @@
-
 import 'package:flutter/material.dart';
 import 'package:qanaty/core/utilis/responsive.dart';
 import 'package:qanaty/core/widget/acount_widget.dart';
 import 'package:qanaty/core/widget/main_button.dart';
 import 'package:qanaty/core/widget/periode_selector.dart';
 import 'package:qanaty/core/widget/side_bar_widget.dart';
-
 import '../../core/theme/app_style.dart';
-import '../../core/widget/facture_widget.dart';
-import '../../core/widget/produit_vendu_widget.dart';
 import '../../core/widget/search_field.dart';
-import '../../core/widget/solde_widget.dart';
+import '../../core/widget/virement_dialog.dart';
 import '../../core/widget/virement_widget.dart';
-import '../../data/models/produit.dart';
 
 class VirementPage extends StatefulWidget {
   final String username="Oussama Bensbaa";
-  final List<Produit> produits = [
-    Produit(
-      nom: "Bouteille 1.5 L",
-      image: "assets/icons/eau_15l_icon.png",
-      bouteillesParPalette: 100,
-      prix: 22800,
-      abrev: "1.5L", color: Appstyle.pie_creme,
-
-    ), Produit(
-      nom: "Bouteille 0.5 L",
-      image: "assets/icons/eau_15l_icon.png",
-      bouteillesParPalette: 100,
-      prix: 22800,
-      abrev: "0.5L", color: Appstyle.pie_orange,
-
-    ),
-    Produit(
-      nom: "Bouteille 1 L",
-      image: "assets/icons/eau_1l_icon.png",
-      bouteillesParPalette: 120,
-      prix: 18000,
-      abrev: "1L", color: Appstyle.pie_blueC,
-    ),
-    Produit(
-      nom: "Bouteille 2 L",
-      image: "assets/icons/eau_2l_icon.png",
-      bouteillesParPalette: 80,
-      prix: 25000,
-      abrev: "2L", color: Appstyle.pie_blueF,
-    ),
-    Produit(
-      nom: "Bouteille 0.33 Cl",
-      image: "assets/icons/eau_33l_icon.png",
-      bouteillesParPalette: 80,
-      prix: 25000,
-      abrev: "0.33L", color: Appstyle.pie_move,
-    ),
-    Produit(
-      nom: "Bouteille 0.33 L Sport",
-      image: "assets/icons/eau_33l_sport_icon.png",
-      bouteillesParPalette: 80,
-      prix: 25000,
-      abrev: "0.33L S", color: Appstyle.pie_grena,
-    ),
-    Produit(
-      nom: "Bouteille 0.5 L Sport",
-      image: "assets/icons/eau_05l_sport_icon.png",
-      bouteillesParPalette: 80,
-      prix: 25000,
-      abrev: "0.5L S", color: Appstyle.pie_vert,
-    ),
-  ];
   VirementPage({Key? key}) : super(key: key);
   @override
   State<VirementPage> createState() => _VirementPage();
@@ -111,7 +54,7 @@ class _VirementPage extends State<VirementPage> {
 
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // SIde bar
+                        // Side bar
                         Container(
                             width:Responsive.sidebarWidth(adjustedWidth),
                             height:Responsive.sidebarHeight(adjustedHeight),
@@ -119,9 +62,11 @@ class _VirementPage extends State<VirementPage> {
                         )
                         ,
                         SizedBox(width: paddingH,),
+                        // MainVirement
                         Expanded(
                           child: Column(
                             children: [
+                              // notif acount
                               Row (
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
@@ -140,21 +85,38 @@ class _VirementPage extends State<VirementPage> {
                                   SizedBox(width: 16,),
                                 ],
                               ),
+                              // Text
                               Row(
                                 children: [
                                   Text("Vierment", style:Appstyle.textXL_B.copyWith(color: Appstyle.noir)),
                                 ],
                               ),
-                              SizedBox(height: 70),
+                              // Text
+                              SizedBox(height: 20),
+                              // button
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   SizedBox(width: 1,),
                                   PeriodSelector(),
-                                  MainButton(text: "Virement", color: Appstyle.rose, onPressed: (){}),
+                          MainButton(
+                            text: "Virement",
+                            color: Appstyle.rose,
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                barrierDismissible: true, // ✅ ferme si clic dehors
+                                barrierColor: Appstyle.blueF.withOpacity(0.3), // ✅ fond bleu clair
+                                builder: (context) {
+                                  return VirementDialog(); // ton widget Dialog multi-étapes
+                                },
+                              );
+                            },
+                          ),
                                 ],
                               ),
-                              SizedBox(height: 80),
+                              SizedBox(height: 40),
+                              // Mes virement & searchfield
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
@@ -165,47 +127,50 @@ class _VirementPage extends State<VirementPage> {
                                   )
 
                                 ],
-                              ),SizedBox(height: 60),
-                              Container(
-                                width: double.infinity,
-                                height: adjustedHeight*0.5,
-                                child: Wrap(
-                                  spacing: paddingH*1.5, // espace horizontal entre widgets
-                                  runSpacing: 26, // espace vertical si ça revient à la ligne
-                                  children: <Widget>[
-                                    Container(
-                                      width: Responsive.virementWidth(adjustedWidth),
-                                      height: Responsive.virementHeight(adjustedHeight),
-                                      child: VirementWidget(numero: "120320120",montant: "15234234.00 Da",date: "24/02/2025",etat: "valide",),
-                                    ),
-                                    Container(
-                                      width: Responsive.virementWidth(adjustedWidth),
-                                      height: Responsive.virementHeight(adjustedHeight),
-                                      child: VirementWidget(numero: "120320120",montant: "15234234.00 Da",date: "24/02/2025",etat: "valide",),
-                                    ),
-                                    Container(
-                                      width: Responsive.virementWidth(adjustedWidth),
-                                      height: Responsive.virementHeight(adjustedHeight),
-                                      child: VirementWidget(numero: "120320120",montant: "15234234.00 Da",date: "24/02/2025",etat: "valide",),
-                                    ),
-                                    Container(
-                                      width: Responsive.virementWidth(adjustedWidth),
-                                      height: Responsive.virementHeight(adjustedHeight),
-                                      child: VirementWidget(numero: "120320120",montant: "15234234.00 Da",date: "24/02/2025",etat: "valide",),
-                                    ),
-                                    Container(
-                                      width: Responsive.virementWidth(adjustedWidth),
-                                      height: Responsive.virementHeight(adjustedHeight),
-                                      child: VirementWidget(numero: "120320120",montant: "15234234.00 Da",date: "24/02/2025",etat: "valide",),
-                                    ),
-                                    Container(
-                                      width: Responsive.virementWidth(adjustedWidth),
-                                      height: Responsive.virementHeight(adjustedHeight),
-                                      child: VirementWidget(numero: "120320120",montant: "15234234.00 Da",date: "24/02/2025",etat: "valide",),
-                                    ),
-                                  ],
-                                )
                               ),
+                              SizedBox(height: 20),
+                              // Les virement
+                              Container(
+                                  width: double.infinity,
+                                  height: adjustedHeight*0.5,
+                                  child: Wrap(
+                                    spacing: paddingH*1.5, // espace horizontal entre widgets
+                                    runSpacing: 26, // espace vertical si ça revient à la ligne
+                                    children: <Widget>[
+                                      Container(
+                                        width: Responsive.virementWidth(adjustedWidth),
+                                        height: Responsive.virementHeight(adjustedHeight),
+                                        child: VirementWidget(numero: "120320120",montant: "15234234.00 Da",date: "24/02/2025",etat: "valide",),
+                                      ),
+                                      Container(
+                                        width: Responsive.virementWidth(adjustedWidth),
+                                        height: Responsive.virementHeight(adjustedHeight),
+                                        child: VirementWidget(numero: "120320120",montant: "15234234.00 Da",date: "24/02/2025",etat: "valide",),
+                                      ),
+                                      Container(
+                                        width: Responsive.virementWidth(adjustedWidth),
+                                        height: Responsive.virementHeight(adjustedHeight),
+                                        child: VirementWidget(numero: "120320120",montant: "15234234.00 Da",date: "24/02/2025",etat: "valide",),
+                                      ),
+                                      Container(
+                                        width: Responsive.virementWidth(adjustedWidth),
+                                        height: Responsive.virementHeight(adjustedHeight),
+                                        child: VirementWidget(numero: "120320120",montant: "15234234.00 Da",date: "24/02/2025",etat: "valide",),
+                                      ),
+                                      Container(
+                                        width: Responsive.virementWidth(adjustedWidth),
+                                        height: Responsive.virementHeight(adjustedHeight),
+                                        child: VirementWidget(numero: "120320120",montant: "15234234.00 Da",date: "24/02/2025",etat: "valide",),
+                                      ),
+                                      Container(
+                                        width: Responsive.virementWidth(adjustedWidth),
+                                        height: Responsive.virementHeight(adjustedHeight),
+                                        child: VirementWidget(numero: "120320120",montant: "15234234.00 Da",date: "24/02/2025",etat: "valide",),
+                                      ),
+                                    ],
+                                  )
+                              ),
+                              //
                             ],
                           ),
                         )

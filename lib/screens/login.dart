@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'PhoneValidation.dart';
+import 'dashboard/dashboard_page.dart';
 
 class login extends StatelessWidget {
   const login({super.key});
@@ -153,7 +154,7 @@ class login extends StatelessWidget {
                      onPressed: () {
                        Navigator.push(
                          context,
-                         MaterialPageRoute(builder: (context) => const PhoneValidation()), // 👈 target page
+                         MaterialPageRoute(builder: (context) => DashboardPage()), // 👈 target page
                        );
                      },
                      style: ElevatedButton.styleFrom(
@@ -178,7 +179,12 @@ class login extends StatelessWidget {
                const SizedBox(height: 16),
                Center(
                  child: TextButton(
-                   onPressed: () {},
+                   onPressed: () {
+                     Navigator.push(
+                       context,
+                       MaterialPageRoute(builder: (context) =>PhoneValidation()), // 👈 target page
+                     );
+                   },
                    child: const Text("Crée un compte?",
                      style: TextStyle(
                        fontFamily: "Oswald",

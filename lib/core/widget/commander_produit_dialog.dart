@@ -3,79 +3,57 @@ import 'package:qanaty/core/theme/app_style.dart';
 import 'package:qanaty/core/widget/main_button.dart';
 import 'package:qanaty/core/widget/palette_selectionne.dart';
 import 'package:qanaty/core/widget/produit_selectionne.dart';
+
 import '../../data/models/produit.dart';
+import '../../data/produits.dart';
 
-/// Modèle Produit
-
-/// Exemple de produits
-List<Produit> produits = [
-  Produit(
-    nom: "Bouteille 1.5 L",
-    image: "assets/icons/eau_15l_icon.png",
-    bouteillesParPalette: 100,
-    prix: 22800,
-    abrev: "1.5L", color: Appstyle.pie_creme,
-
-  ), Produit(
-    nom: "Bouteille 0.5 L",
-    image: "assets/icons/eau_15l_icon.png",
-    bouteillesParPalette: 100,
-    prix: 22800,
-    abrev: "0.5L", color: Appstyle.pie_orange,
-
-  ),
-  Produit(
-    nom: "Bouteille 1 L",
-    image: "assets/icons/eau_1l_icon.png",
-    bouteillesParPalette: 120,
-    prix: 18000,
-    abrev: "1L", color: Appstyle.pie_blueC,
-  ),
-  Produit(
-    nom: "Bouteille 2 L",
-    image: "assets/icons/eau_2l_icon.png",
-    bouteillesParPalette: 80,
-    prix: 25000,
-    abrev: "2L", color: Appstyle.pie_blueF,
-  ),
-  Produit(
-    nom: "Bouteille 0.33 Cl",
-    image: "assets/icons/eau_33l_icon.png",
-    bouteillesParPalette: 80,
-    prix: 25000,
-    abrev: "0.33L", color: Appstyle.pie_move,
-  ),
-  Produit(
-    nom: "Bouteille 0.33 L Sport",
-    image: "assets/icons/eau_33l_sport_icon.png",
-    bouteillesParPalette: 80,
-    prix: 25000,
-    abrev: "0.33L S", color: Appstyle.pie_grena,
-  ),
-  Produit(
-    nom: "Bouteille 0.5 L Sport",
-    image: "assets/icons/eau_05l_sport_icon.png",
-    bouteillesParPalette: 80,
-    prix: 25000,
-    abrev: "0.5L S", color: Appstyle.pie_vert,
-  ),
-];
+/// Exemple de panier
 Map<Produit, int> panier = {};
 bool palette = false;
-double prix_palette=10000.00;
-double solde=100000.00;
-bool commande_confirme=false;
+String nom_chauffeur="";
+String matricule_camion="";
+bool chaufeur = false;
+double prix_palette = 10000.00;
+bool commande_confirme = false;
+final List<String> chauffeurs = [
+  "Ali Benali",
+  "Mohamed Salah",
+  "Yacine Kader",
+  "Karim Amine",
+  "Sofiane Hichem",
+  "Adel Rachid",
+  "Nassim Bilal",
+  "Omar Farid",
+  "Rabah Mourad",
+  "Samir Reda"
+];
+final List<String> camions = [
+  "12345-101-16",
+  "67890-202-16",
+  "11223-303-16",
+  "44556-404-16",
+  "77889-505-16",
+  "99001-606-16",
+  "22334-707-16",
+  "55667-808-16",
+  "88990-909-16",
+  "33445-010-16"
+];
 
 /// Fonction pour afficher le Dialog
-void showNouvelleCommandeDialog(BuildContext context) {
+void showNouvelleCommandeDialog(BuildContext context, double solde) {
+  panier.clear();
+  palette = false;
+  commande_confirme = false;
   showDialog(
     context: context,
     builder: (context) {
-      return CommanderProduitDialog();
+      return CommanderProduitDialog(solde: solde);
     },
   );
 }
 
+/// total nombre de palettes
 int get totalnombrepalette {
   int total = 0;
   panier.forEach((produit, qte) {
@@ -84,6 +62,7 @@ int get totalnombrepalette {
   return total;
 }
 
+/// total montant commande
 double get totalCommande {
   double total = 0;
   panier.forEach((produit, qte) {
@@ -94,22 +73,32 @@ double get totalCommande {
   }
   return total;
 }
+
 /// Dialog multi-étapes
 class CommanderProduitDialog extends StatefulWidget {
+  final double solde;
+
+  const CommanderProduitDialog({super.key, required this.solde});
+
   @override
   _CommanderProduitDialog createState() => _CommanderProduitDialog();
 }
 
 class _CommanderProduitDialog extends State<CommanderProduitDialog> {
   int currentStep = 0;
-  // Données étape 1
   int currentIndex = 0;
+  String? selectedChauffeur;
+  String? selectedCamion;
+
   // ✅ Déclaration du contrôleur pour le carrousel
   late PageController _pageController;
 
   @override
   void initState() {
     super.initState();
+    panier.clear();
+    palette = false;
+    commande_confirme = false;
     _pageController = PageController(viewportFraction: 0.7);
   }
 
@@ -119,89 +108,124 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
     super.dispose();
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
+      insetPadding: const EdgeInsets.all(20), // évite que ça colle aux bords
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Container(
-        width: 500,
-        height: 850,
-        decoration: BoxDecoration(
-          color: Appstyle.blanc,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        padding: EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(child: _buildStepContent()),
-            Row(
-              children: [
-                // Afficher le bouton retour seulement si on est entre step 1 et 2
-                if (currentStep > 0 && currentStep < 3)
-                  TextButton(
-                    onPressed: () => setState(() => currentStep--),
-                    child: const Text("← Retour"),
-                  ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          // On calcule la hauteur réelle dispo
+          final screenHeight = MediaQuery.of(context).size.height;
 
-                // Si currentStep == 3 → bouton centré Terminer
-                if (currentStep == 3)
-                  Expanded(
-                    child: Center(
-                      child: MainButton(
-                        text: "Terminer",
-                        icon: Icons.check,
-                        iconOnRight: true,
-                        color: Appstyle.rose,
-                        onPressed: () {
-                          Navigator.pop(context); // ferme la fenêtre ou revient à l'accueil
-                        },
-                      ),
+          return ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: 500, // largeur fixe
+              maxHeight: screenHeight - 40, // 👈 garde marge même si petit écran
+            ),
+            child: Container(
+              width: 500,
+              height: 850, // taille "idéale"
+              decoration: BoxDecoration(
+                color: Appstyle.blanc,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              padding: const EdgeInsets.all(20),
+              child: SingleChildScrollView( // 👈 scroll si ça dépasse
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      height: 750, // contenu fixe, scrollable si petit écran
+                      child: _buildStepContent(),
                     ),
-                  )
-                else ...[
-                  const Spacer(),
-                  MainButton(
-                    text: currentStep == 2 ? "Payer" : "Suivant",
-                    icon: Icons.arrow_forward,
-                    iconOnRight: true,
-                    color: Appstyle.rose,
-                    onPressed: () {
-                      if (currentStep < 2) {
-                        setState(() => currentStep++);
-                      } else if (currentStep == 2) {
-                        setState(() => currentStep++);
-                        if (solde >= totalCommande) {
-                          commande_confirme = true;
-                        } else {
-                          commande_confirme = false;
-                        }
-                      }
-                    },
-                  ),
-                ],
-              ],
-            )
+                    Row(
+                      children: [
+                        if (currentStep > 0 && currentStep < 4)
+                          TextButton(
+                            onPressed: () => setState(() => currentStep--),
+                            child: const Text("← Retour"),
+                          ),
+                        if (currentStep == 4)
+                          Expanded(
+                            child: Center(
+                              child: MainButton(
+                                text: "Terminer",
+                                icon: Icons.check,
+                                iconOnRight: true,
+                                color: Appstyle.rose,
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ),
+                          )
+                        else ...[
+                          const Spacer(),
+                          MainButton(
+                            text: currentStep == 3 ? "Payer" : "Suivant",
+                            icon: Icons.arrow_forward,
+                            iconOnRight: true,
+                            color: Appstyle.rose,
+                            onPressed: () {
+                              if (currentStep == 0) {
+                                // ✅ Vérifie si la quantité du produit sélectionné est > 0
+                                Produit produit = produits[currentIndex];
+                                int quantite = panier[produit] ?? 0;
 
-          ],
-        ),
+                                if (quantite > 0) {
+                                  setState(() => currentStep++);
+                                } else {
+                                  // Affiche un message d'erreur
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text("Veuillez sélectionner au moins une quantité avant de continuer."),
+                                      duration: Duration(seconds: 2),
+                                    ),
+                                  );
+                                }
+                              } else if (currentStep < 3) {
+                                setState(() => currentStep++);
+                              } else if (currentStep == 3) {
+                                setState(() => currentStep++);
+                                if (widget.solde >= totalCommande) {
+                                  commande_confirme = true;
+                                } else {
+                                  commande_confirme = false;
+                                }
+                              }
+                            },
+                          ),
+                        ],
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
 
-  /// Contenu selon l’étape
+  /// Contenu étapes
   Widget _buildStepContent() {
     switch (currentStep) {
       case 0:
         return _buildStep1ProduitQuantite();
       case 1:
-        return _buildStep2Palette();
+        return _buildStep2Chau_camion();
       case 2:
-        return _buildStep3Confirmation();
+        return _buildStep2Palette();
       case 3:
+        return _buildStep3Confirmation();
+      case 4:
         return _buildStep4Confirmation();
       default:
-        return SizedBox.shrink();
+        return const SizedBox.shrink();
     }
   }
 
@@ -382,7 +406,7 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
         ),
         const SizedBox(height: 20),
 
-        SizedBox(height: 20),
+        SizedBox(height: 40),
 
         // --- Montant produit ---
         Row(
@@ -398,8 +422,26 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
             ),
           ],
         ),
+        // --- Total commande ---
 
+        SizedBox(height: 120),
+        // --- Total nombre pallete commande ---
+
+        Row(
+          children: [
+            Text(
+              "Total de palette :",
+              style: Appstyle.textM_B.copyWith(color: Appstyle.gris),
+            ),
+            SizedBox(width: 10),
+            Text(
+              "${totalnombrepalette.toStringAsFixed(0)}",
+              style: Appstyle.textM_B.copyWith(color: Appstyle.blueF),
+            ),
+          ],
+        ),
         SizedBox(height: 20),
+
 
         // --- Total commande ---
         Row(
@@ -419,7 +461,168 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
     );
   }
 
-  /// Étape 2 : Palette
+  /// Étape 2 : Chauffeur et camion
+  Widget _buildStep2Chau_camion() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Nouvelle commande",
+          style: Appstyle.textS_B.copyWith(color: Appstyle.noir),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Image.asset(
+              "assets/icons/chauffeur_icon.png",
+              width: 20,
+              height: 20,
+              fit: BoxFit.contain,
+            ),
+            const SizedBox(width: 10),
+            Text(
+              "Chauffeur & Camion",
+              style: Appstyle.textS_B.copyWith(color: Appstyle.gris),
+            ),
+          ],
+        ),
+        const SizedBox(height: 40),
+        Text(
+          "Vous voulez envoyé un chauffeur ?",
+          style: Appstyle.textS_B.copyWith(color: Appstyle.gris),
+        ),
+        const SizedBox(height: 20),
+        // Boutons Oui / Non
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  chaufeur = true;
+                });
+              },
+              child: Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: chaufeur ? Appstyle.rose : Appstyle.grisC,
+                ),
+                alignment: Alignment.center,
+                child: Text(
+                  "Oui",
+                  style: Appstyle.textS_B.copyWith(
+                    color: chaufeur ? Colors.white : Appstyle.blanc,
+                  ),
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  chaufeur = false;
+                });
+              },
+              child: Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: !chaufeur ? Appstyle.rose : Appstyle.grisC,
+                ),
+                alignment: Alignment.center,
+                child: Text(
+                  "Non",
+                  style: Appstyle.textS_B.copyWith(
+                    color: !chaufeur ? Colors.white : Appstyle.blanc,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+
+        const SizedBox(height: 20),
+
+        // --- Si chauffeur == true => afficher les listes déroulantes
+        if (chaufeur) ...[
+          const SizedBox(height: 20),
+          Text("Sélectionnez un chauffeur :", style: Appstyle.textS_B),
+          const SizedBox(height: 10),
+          DropdownButtonFormField<String>(
+            value: selectedChauffeur,
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.grey.shade100,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            ),
+            items: chauffeurs.map((c) {
+              return DropdownMenuItem<String>(
+                value: c,
+                child: Text(c, style: Appstyle.textS_B),
+              );
+            }).toList(),
+            onChanged: (value) {
+              setState(() {
+                selectedChauffeur = value;
+              });
+            },
+          ),
+
+          const SizedBox(height: 20),
+          Text("Sélectionnez un camion :", style: Appstyle.textS_B),
+          const SizedBox(height: 10),
+          DropdownButtonFormField<String>(
+            value: selectedCamion,
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.grey.shade100,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
+              ),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            ),
+            items: camions.map((c) {
+              return DropdownMenuItem<String>(
+                value: c,
+                child: Text(c, style: Appstyle.textS_B),
+              );
+            }).toList(),
+            onChanged: (value) {
+              setState(() {
+                selectedCamion = value;
+              });
+            },
+          ),
+        ],
+
+        chaufeur?SizedBox(height: 270):SizedBox(height: 470),
+
+        Row(
+          children: [
+            Text(
+              "Total de commande :",
+              style: Appstyle.textM_B.copyWith(color: Appstyle.gris),
+            ),
+            SizedBox(width: 10),
+            Text(
+              "${totalCommande.toStringAsFixed(2)} DA",
+              style: Appstyle.textM_B.copyWith(color: Appstyle.blueF),
+            ),
+          ],
+        ),
+
+      ],
+    );
+  }
+
+  /// Étape 3 : Palette
   Widget _buildStep2Palette() {
     return Column(
       children: [
@@ -587,7 +790,7 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
     );
   }
 
-  /// Étape 3 : Confrimation
+ /// Étape 4 : Confrimation
   Widget _buildStep3Confirmation() {
     Produit produit = produits[currentIndex];
 
@@ -653,19 +856,10 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
                 ),
               ),
             ),
-
-
-
             const SizedBox(height: 10),
 
+            // ✅ Affichage chauffeur et camion si choisi
 
-
-            // --- Total commande ---
-          ],
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
             // --- Total commande ---
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -676,37 +870,35 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
                 ),
                 const SizedBox(width: 10),
                 Text(
-                  "${(palette?(totalCommande-prix_palette):totalCommande).toStringAsFixed(2)} DA",
+                  "${(palette ? (totalCommande - prix_palette) : totalCommande).toStringAsFixed(2)} DA",
                   style: Appstyle.textM_B.copyWith(color: Appstyle.blueF),
                 ),
               ],
             ),
           ],
         ),
-        // ✅ Ligne Palette si choisie
+
         const SizedBox(height: 40),
+
         Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // --- Total commande ---
             if (palette)
               PaletteSelectionne(
                 quantite: totalnombrepalette.toString(),
                 montant: prix_palette.toStringAsFixed(2) + " DA",
               ),
-
           ],
         ),
+
         const SizedBox(height: 10),
 
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // --- Total commande ---
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-
                 Text(
                   "Total de commande:",
                   style: Appstyle.textM_B.copyWith(color: Appstyle.gris),
@@ -716,16 +908,48 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
                   "${totalCommande.toStringAsFixed(2)} DA",
                   style: Appstyle.textM_B.copyWith(color: Appstyle.blueF),
                 ),
+
+
               ],
             ),
+            const SizedBox(height: 20),
+            if (chaufeur && selectedChauffeur != null && selectedCamion != null) ...[
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Text(
+                    "Chauffeur : ",
+                    style: Appstyle.textS_B.copyWith(color: Appstyle.grisC),
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    selectedChauffeur!,
+                    style: Appstyle.textS_B.copyWith(color: Appstyle.noir),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Text(
+                    "Camion : ",
+                    style: Appstyle.textS_B.copyWith(color: Appstyle.grisC),
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    selectedCamion!,
+                    style: Appstyle.textS_B.copyWith(color: Appstyle.noir),
+                  ),
+                ],
+              ),
+            ],
           ],
         ),
       ],
     );
-
   }
 
-  /// Étape 4 : Message
+  /// Étape 5 : Message
   Widget _buildStep4Confirmation() {
     Produit produit = produits[currentIndex];
 

@@ -6,14 +6,13 @@ import 'package:qanaty/core/widget/periode_selector.dart';
 import 'package:qanaty/core/widget/side_bar_widget.dart';
 import '../../core/theme/app_style.dart';
 import '../../core/widget/bar_chart.dart';
-import '../../core/widget/commander_produit_dialog.dart';
 import '../../core/widget/pie_chart.dart';
 import '../../core/widget/produit_vendu_widget.dart';
-import '../../data/models/produit.dart';
+import '../../data/produits.dart';
 
 class DashboardPage extends StatefulWidget {
   final String username="Oussama Bensbaa";
-  DashboardPage({Key? key}) : super(key: key);
+   DashboardPage({Key? key}) : super(key: key);
 
   @override
   State<DashboardPage> createState() => _DashboardPageState();
@@ -69,8 +68,8 @@ class _DashboardPageState extends State<DashboardPage> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Appstyle.blueSC,
-      body: LayoutBuilder(
+       backgroundColor: Appstyle.blueSC,
+       body: LayoutBuilder(
         builder: (context, constraints) {
           final screenWidth = constraints.maxWidth;
           final screenHeight = constraints.maxHeight;
@@ -98,119 +97,119 @@ class _DashboardPageState extends State<DashboardPage> {
                   child: SizedBox(
                     width: adjustedWidth,
                     height: adjustedHeight,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // SIde bar
-                        Container(
-                            width:Responsive.sidebarWidth(adjustedWidth),
-                            height:Responsive.sidebarHeight(adjustedHeight),
-                            child: SideBarWidget()
-                        ),
+                         child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                                    // SIde bar
+                                Container(
+                                    width:Responsive.sidebarWidth(adjustedWidth),
+                                    height:Responsive.sidebarHeight(adjustedHeight),
+                                    child: SideBarWidget()
+                                ),
 
-                        SizedBox(width: paddingH),
+                                SizedBox(width: paddingH),
 
-                        // MAinDASH
+                            // MAinDASH
 
-                        Expanded(
-                          child: Column(
-                            children: [
-                              // Notification & Compte
-                              Row (
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  SizedBox(height: 1,) ,
-                                  Row(
-                                    children: [
-                                      IconButton(
-                                        icon: Image.asset(
-                                          "assets/icons/notifications_icon.png",
-                                          width: Responsive.notificationSize(adjustedWidth),
-                                          height: Responsive.notificationSize(adjustedWidth),
-                                          fit: BoxFit.contain,
-                                        ),
-                                        onPressed: () {
-                                          // action
-                                        },
+                                Expanded(
+                                  child: Column(
+                                     children: [
+                                        // Notification & Compte
+                                       Row (
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                         children: [
+                                           SizedBox(height: 1,) ,
+                                           Row(
+                                             children: [
+                                               IconButton(
+                                                icon: Image.asset(
+                                                  "assets/icons/notifications_icon.png",
+                                                  width: Responsive.notificationSize(adjustedWidth),
+                                                  height: Responsive.notificationSize(adjustedWidth),
+                                                  fit: BoxFit.contain,
+                                                ),
+                                                onPressed: () {
+                                                  // action
+                                                },
+                                                                                         ),
+                                                SizedBox(width: 10,) ,
+                                                   AccountWidget(name: "Oussama Bensbaa", imageUrl: "assets/images/support.png"),
+                                             ],
+                                           )
+                                        ],
+
+
                                       ),
-                                      SizedBox(width: 10,) ,
-                                      AccountWidget(name: "Oussama Bensbaa", imageUrl: "assets/images/support.png"),
-                                    ],
+                                       // Text
+
+                                       Align(
+                                           alignment: Alignment.topLeft,
+                                           child: Text("Dashboard", style:Appstyle.textXL_B.copyWith(color: Appstyle.noir))),
+                                       SizedBox(height: paddingV,),
+                                      // Periode & NEW Periode
+
+                                       Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                         children: [
+                                           SizedBox(width: 1,),
+                                           PeriodSelector(),
+                                           MainButton(text: "Periode", color: Appstyle.rose, onPressed: (){})
+
+                                         ],
+
+                                       ),
+                                       SizedBox(height: paddingV,),
+
+
+                                       // Produit circle
+                                  Wrap(
+                                    spacing: paddingH * 0.8,
+                                    runSpacing: 16,
+                                    children: produits.map((produit) {
+                                      // Récupère la valeur depuis pieData en fonction de l’abrev
+                                      final double? quantite = pieData[produit.abrev];
+
+                                      return Container(
+                                        width: Responsive.produitVenduWidth(adjustedWidth),
+                                        height: Responsive.produitVenduHeight(adjustedHeight),
+                                        child: ProduitVenduWidget(
+                                          produit: produit.abrev,
+                                          value: quantite != null ? "${quantite.toInt()} Palette" : "0 Palette",
+                                        ),
+                                      );
+                                    }).toList(),
                                   )
-                                ],
+                                       ,
+                                       SizedBox(height: paddingV,),
+                                       // Graph
+
+                                       Row(
+                                         children: [
+                                           Expanded(
+                                             flex:5,
+                                             child: AspectRatio(
+                                               aspectRatio: 6 / 3, // largeur / hauteur
+                                               child: ProduitBarChart(months: barLabels, data: barData,scaleFactor: 1,),
+                                             ),
+                                           ),
+                                           Expanded(
+                                             flex:4,
+                                             child: AspectRatio(
+                                               aspectRatio: 5 / 3,
+                                               child: ProduitPieChart(data: pieData),
+                                             ),
+                                           ),
+                                         ],
+                                       ),
+
+                                     ],
 
 
-                              ),
-                              // Text
+                                   ),
+                                )
+                          ],
 
-                              Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Text("Dashboard", style:Appstyle.textXL_B.copyWith(color: Appstyle.noir))),
-                              SizedBox(height: paddingV,),
-                              // Periode & NEW Periode
-
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  SizedBox(width: 1,),
-                                  PeriodSelector(),
-                                  MainButton(text: "Periode", color: Appstyle.rose, onPressed: (){})
-
-                                ],
-
-                              ),
-                              SizedBox(height: paddingV,),
-
-
-                              // Produit circle
-                              Wrap(
-                                spacing: paddingH * 0.8,
-                                runSpacing: 16,
-                                children: produits.map((produit) {
-                                  // Récupère la valeur depuis pieData en fonction de l’abrev
-                                  final double? quantite = pieData[produit.abrev];
-
-                                  return Container(
-                                    width: Responsive.produitVenduWidth(adjustedWidth),
-                                    height: Responsive.produitVenduHeight(adjustedHeight),
-                                    child: ProduitVenduWidget(
-                                      produit: produit.abrev,
-                                      value: quantite != null ? "${quantite.toInt()} Palette" : "0 Palette",
-                                    ),
-                                  );
-                                }).toList(),
-                              )
-                              ,
-                              SizedBox(height: paddingV,),
-                              // Graph
-
-                              Row(
-                                children: [
-                                  Expanded(
-                                    flex:5,
-                                    child: AspectRatio(
-                                      aspectRatio: 6 / 3, // largeur / hauteur
-                                      child: ProduitBarChart(months: barLabels, data: barData,scaleFactor: 1,),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex:4,
-                                    child: AspectRatio(
-                                      aspectRatio: 5 / 3,
-                                      child: ProduitPieChart(data: pieData),
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-                            ],
-
-
-                          ),
-                        )
-                      ],
-
-                    ),
+                        ),
 
                   ),
                 ),

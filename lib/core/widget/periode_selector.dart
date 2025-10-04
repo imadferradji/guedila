@@ -35,12 +35,12 @@ class _PeriodSelectorState extends State<PeriodSelector> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
               margin: const EdgeInsets.symmetric(horizontal: 4),
               decoration: BoxDecoration(
-                color: isSelected ? Appstyle.blueF : Colors.transparent,
+                color: isSelected ? Appstyle.blueC : Colors.transparent,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
                 items[index],
-                style:Appstyle.textM.copyWith(color: isSelected?Appstyle.blanc:Appstyle.gris)
+                style:Appstyle.textM_B.copyWith(color: isSelected?Appstyle.blanc:Appstyle.gris)
 
               ),
             ),

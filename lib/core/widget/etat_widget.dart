@@ -4,7 +4,7 @@ import 'package:qanaty/core/theme/app_style.dart';
 class EtatWidget extends StatefulWidget {
   final int initialSelectedIndex;
 
-  const EtatWidget({super.key, this.initialSelectedIndex = 1});
+  const EtatWidget({super.key, this.initialSelectedIndex = 1, required Null Function(dynamic index) onChanged});
 
   @override
   State<EtatWidget> createState() => _EtatWidget();
