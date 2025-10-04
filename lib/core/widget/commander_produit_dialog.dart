@@ -4,6 +4,8 @@ import 'package:qanaty/core/widget/main_button.dart';
 import 'package:qanaty/core/widget/palette_selectionne.dart';
 import 'package:qanaty/core/widget/produit_selectionne.dart';
 
+import '../../data/camions.dart';
+import '../../data/chauffeurs.dart';
 import '../../data/models/produit.dart';
 import '../../data/produits.dart';
 
@@ -15,30 +17,8 @@ String matricule_camion="";
 bool chaufeur = false;
 double prix_palette = 10000.00;
 bool commande_confirme = false;
-final List<String> chauffeurs = [
-  "Ali Benali",
-  "Mohamed Salah",
-  "Yacine Kader",
-  "Karim Amine",
-  "Sofiane Hichem",
-  "Adel Rachid",
-  "Nassim Bilal",
-  "Omar Farid",
-  "Rabah Mourad",
-  "Samir Reda"
-];
-final List<String> camions = [
-  "12345-101-16",
-  "67890-202-16",
-  "11223-303-16",
-  "44556-404-16",
-  "77889-505-16",
-  "99001-606-16",
-  "22334-707-16",
-  "55667-808-16",
-  "88990-909-16",
-  "33445-010-16"
-];
+
+
 
 /// Fonction pour afficher le Dialog
 void showNouvelleCommandeDialog(BuildContext context, double solde) {
@@ -172,10 +152,8 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
                             onPressed: () {
                               if (currentStep == 0) {
                                 // ✅ Vérifie si la quantité du produit sélectionné est > 0
-                                Produit produit = produits[currentIndex];
-                                int quantite = panier[produit] ?? 0;
 
-                                if (quantite > 0) {
+                                if (totalnombrepalette > 0) {
                                   setState(() => currentStep++);
                                 } else {
                                   // Affiche un message d'erreur
@@ -563,8 +541,8 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
             ),
             items: chauffeurs.map((c) {
               return DropdownMenuItem<String>(
-                value: c,
-                child: Text(c, style: Appstyle.textS_B),
+                value: c.nom,
+                child: Text(c.nom, style: Appstyle.textS_B),
               );
             }).toList(),
             onChanged: (value) {
@@ -590,8 +568,8 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
             ),
             items: camions.map((c) {
               return DropdownMenuItem<String>(
-                value: c,
-                child: Text(c, style: Appstyle.textS_B),
+                value: c.Matricule,
+                child: Text(c.Matricule, style: Appstyle.textS_B),
               );
             }).toList(),
             onChanged: (value) {

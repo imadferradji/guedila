@@ -6,8 +6,10 @@ import 'package:qanaty/core/widget/periode_selector.dart';
 import 'package:qanaty/core/widget/side_bar_widget.dart';
 import '../../core/theme/app_style.dart';
 import '../../core/widget/bar_chart.dart';
+import '../../core/widget/commander_produit_dialog.dart';
 import '../../core/widget/pie_chart.dart';
 import '../../core/widget/produit_vendu_widget.dart';
+import '../../data/models/produit.dart';
 import '../../data/produits.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -175,6 +177,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                         child: ProduitVenduWidget(
                                           produit: produit.abrev,
                                           value: quantite != null ? "${quantite.toInt()} Palette" : "0 Palette",
+                                          color: produit.color,
                                         ),
                                       );
                                     }).toList(),

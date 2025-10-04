@@ -2,19 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:qanaty/core/utilis/responsive.dart';
 import 'package:qanaty/core/widget/acount_widget.dart';
 import 'package:qanaty/core/widget/side_bar_widget.dart';
-import '../../core/theme/app_style.dart';
+import '../../../core/theme/app_style.dart';
 
-class ProfilePage extends StatefulWidget {
+
+class ProfilePageC extends StatefulWidget {
   final String username="Oussama Bensbaa";
   final int initialIndex;
 
-  ProfilePage({Key? key, this.initialIndex = 0}) : super(key: key);
+  ProfilePageC({Key? key, this.initialIndex = 0}) : super(key: key);
 
   @override
-  State<ProfilePage> createState() => _ProfilePage();
+  State<ProfilePageC> createState() => _ProfilePageC();
 }
 
-class _ProfilePage extends State<ProfilePage> {
+class _ProfilePageC extends State<ProfilePageC> {
 
   final TextEditingController _controller = TextEditingController();
 

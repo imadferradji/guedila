@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:qanaty/core/utilis/responsive.dart';
 import 'package:qanaty/core/widget/acount_widget.dart';
-import 'package:qanaty/core/widget/side_bar_widget.dart';
-import '../../core/theme/app_style.dart';
-import '../../core/widget/etat_facture_widget.dart';
-import '../../core/widget/facture_widget.dart';
-import '../../core/widget/facture_widget_plus_imprimer.dart';
-import '../../core/widget/search_field.dart';
+import '../../../core/theme/app_style.dart';
+import '../../../core/widget/etat_facture_widget.dart';
+import '../../../core/widget/facture_widget.dart';
+import '../../../core/widget/facture_widget_plus_imprimer.dart';
+import '../../../core/widget/search_field.dart';
+import '../../Widgets/side_bar.dart';
 
 
-class DocumentPage extends StatefulWidget {
+class DocumentPageC extends StatefulWidget {
   final String username="Oussama Bensbaa";
-  DocumentPage({Key? key}) : super(key: key);
+  DocumentPageC({Key? key}) : super(key: key);
   @override
-  State<DocumentPage> createState() => _DocumentPage();
+  State<DocumentPageC> createState() => _DocumentPageC();
 }
 
-class _DocumentPage extends State<DocumentPage> {
+class _DocumentPageC extends State<DocumentPageC> {
 
   final TextEditingController _controller = TextEditingController();
   TextEditingController dateFromController = TextEditingController();
@@ -81,7 +81,7 @@ class _DocumentPage extends State<DocumentPage> {
                         Container(
                             width:Responsive.sidebarWidth(adjustedWidth),
                             height:Responsive.sidebarHeight(adjustedHeight),
-                            child: SideBarWidget()
+                            child: SideBarWidgetC()
                         )
                         ,
                         SizedBox(width: paddingH,),
@@ -244,36 +244,34 @@ class _DocumentPage extends State<DocumentPage> {
                                       FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé' ),
                                       SizedBox(height: 10,),
                                       FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé'),
-
                                     ],
                                   ):Column(children: [
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
-                                      SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
-                                      SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
-                                      SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
-                                      SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
-                                      SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
-                                      SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
-                                      SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
-                                      SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
-                                      SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
-                                      SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
-                                      SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
-                                      SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
-
-                                    ],),
+                                    FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
+                                    SizedBox(height: 10,),
+                                    FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
+                                    SizedBox(height: 10,),
+                                    FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
+                                    SizedBox(height: 10,),
+                                    FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
+                                    SizedBox(height: 10,),
+                                    FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
+                                    SizedBox(height: 10,),
+                                    FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
+                                    SizedBox(height: 10,),
+                                    FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
+                                    SizedBox(height: 10,),
+                                    FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
+                                    SizedBox(height: 10,),
+                                    FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
+                                    SizedBox(height: 10,),
+                                    FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
+                                    SizedBox(height: 10,),
+                                    FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
+                                    SizedBox(height: 10,),
+                                    FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
+                                    SizedBox(height: 10,),
+                                    FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
+                                  ],),
                                 ),
                               ),
                               SizedBox(height: 30,),
@@ -300,9 +298,6 @@ class _DocumentPage extends State<DocumentPage> {
                                         child: Center(child: Text("Montant total: 1968000.00 Da",style: Appstyle.textM_B.copyWith(color: Appstyle.blanc),)),
                                       ),),
                                   ),
-
-
-
                                   SizedBox(width: 50,),
                                   SizedBox(
                                     height:40,
@@ -320,22 +315,17 @@ class _DocumentPage extends State<DocumentPage> {
                                           ),
                                         ],
                                       ),  child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Center(child: Text("Nomber Pallet de total: 1980",style: Appstyle.textM_B.copyWith(color: Appstyle.blanc),)),
-                                      ),),
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Center(child: Text("Nomber Pallet de total: 1980",style: Appstyle.textM_B.copyWith(color: Appstyle.blanc),)),
+                                    ),),
                                   ),
                                   SizedBox(width: 50,),
                                 ],
                               ),
-
-
                             ],
-
-
                           ),
                         )
                       ],
-
                     ),
                   ),
                 ),

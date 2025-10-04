@@ -15,18 +15,18 @@ final TextEditingController dateMiseCirculationController = TextEditingControlle
 String? camionImagePath;
 
 /// Fonction pour afficher le Dialog d'ajout de camion
-void showNewCamionDialog(BuildContext context, VoidCallback onCamionAdded) {
+void showNewCamionDialog(BuildContext context) {
   showDialog(
     context: context,
-    builder: (context) => CamionDialog(onCamionAdded: onCamionAdded),
+    builder: (context) => CamionDialog(),
   );
 }
 
 /// Dialog multi-étapes pour l'ajout d'un camion
 class CamionDialog extends StatefulWidget {
-  final VoidCallback onCamionAdded;
 
-  CamionDialog({required this.onCamionAdded});
+
+
 
   @override
   _CamionDialogState createState() => _CamionDialogState();
@@ -107,7 +107,7 @@ class _CamionDialogState extends State<CamionDialog> {
                       child: ElevatedButton(
                         onPressed: () {
                           _saveCamionInfo();
-                          widget.onCamionAdded();
+
                           Navigator.pop(context);
                         },
                         child: Row(
@@ -456,11 +456,11 @@ class _CamionDialogState extends State<CamionDialog> {
               border: Border.all(color: Colors.grey),
             ),
             child: Column(
-              children: [
-                _buildInfoRow("Immatriculation:", matriculeController.text),
-                _buildInfoRow("Tonnage:", "${tonnageController.text} tonnes"),
-                _buildInfoRow("Type:", selectedTypeCamion ?? "Non spécifié"),
-                _buildInfoRow("Matricule de remourqe:", "${marqueController.text} "),]
+                children: [
+                  _buildInfoRow("Immatriculation:", matriculeController.text),
+                  _buildInfoRow("Tonnage:", "${tonnageController.text} tonnes"),
+                  _buildInfoRow("Type:", selectedTypeCamion ?? "Non spécifié"),
+                  _buildInfoRow("Matricule de remourqe:", "${marqueController.text} "),]
             ),
           ),
 

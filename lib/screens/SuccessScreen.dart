@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'dashboard/dashboard_page.dart';
-
 class SuccessScreen extends StatelessWidget {
   const SuccessScreen({super.key});
 
@@ -100,10 +98,7 @@ class SuccessScreen extends StatelessWidget {
                           height: 50,
                           child: ElevatedButton(
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => DashboardPage()), // 👈 target page
-                              );
+                              // TODO: Handle commencer action
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFFF482D2), // Pink background

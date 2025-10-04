@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qanaty/core/theme/app_style.dart';
 
-class SideBarWidget extends StatelessWidget {
-  const SideBarWidget({super.key});
+class SideBarWidgetC extends StatelessWidget {
+  const SideBarWidgetC ({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -73,27 +73,27 @@ class SideBarWidget extends StatelessWidget {
             buildMenuItem(
                 iconPath: "assets/icons/dashboard_icon.png",
                 text: "Dashboard",
-                route: "/dashboard"),
+                route: "/"),
             buildMenuItem(
                 iconPath: "assets/icons/commande_icon.png",
                 text: "Commande",
-                route: "/commande"),
+                route: "/CommandeCompany"),
             buildMenuItem(
                 iconPath: "assets/icons/virement_icon.png",
                 text: "Virement",
-                route: "/virement"),
+                route: "/Virmentcompany"),
             buildMenuItem(
                 iconPath: "assets/icons/document_icon.png",
                 text: "Document",
-                route: "/document"),
+                route: "/documentCompany"),
             buildMenuItem(
-                iconPath: "assets/icons/chauffeur_icon.png",
-                text: "Chauffeur & Camion",
-                route: "/drivertruck"),
+                iconPath: "assets/icons/compte_icon.png",
+                text: "Compte",
+                route: "/comptes"),
             buildMenuItem(
                 iconPath: "assets/icons/profile_icon.png",
                 text: "Profile",
-                route: "/profile"),
+                route: "/profileC"),
 
             const Spacer(),
 

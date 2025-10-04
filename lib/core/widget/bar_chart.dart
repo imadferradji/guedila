@@ -5,13 +5,16 @@ import '../../data/produits.dart';
 class ProduitBarChart extends StatelessWidget {
   final List<String> months; // ex: ["Sept", "Oct", "Nov"]
   final Map<String, Map<String, double>> data;
+  // ex: { "Sept": {"0.33L":181,"0.5L":129,...}, "Oct": {...} }
+
+  // 👇 Ajout d’un facteur d’échelle (par défaut 1.0 => pas de changement)
   final double scaleFactor;
 
   const ProduitBarChart({
     super.key,
     required this.months,
     required this.data,
-    this.scaleFactor = 1.0, // default scale
+    required this.scaleFactor , // 👈 réduit la hauteur à 70%
   });
 
   @override
@@ -42,10 +45,11 @@ class ProduitBarChart extends StatelessWidget {
           final monthName = monthEntry.value;
           final monthData = data[monthName] ?? {};
 
+          // Créer une barre pour chaque produit avec échelle
           final rods = produits.map((produit) {
             final value = monthData[produit.abrev] ?? 0;
             return BarChartRodData(
-              toY: value * scaleFactor,
+              toY: value * scaleFactor, // 👈 applique le facteur d’échelle
               color: produit.color,
               width: 12,
               borderRadius: BorderRadius.circular(4),
@@ -55,7 +59,7 @@ class ProduitBarChart extends StatelessWidget {
           return BarChartGroupData(
             x: monthIndex,
             barRods: rods,
-            barsSpace: 4,
+            barsSpace: 4, // espace entre les barres du même mois
           );
         }).toList(),
       ),
