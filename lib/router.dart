@@ -46,7 +46,10 @@ class AppRouter {
 
       GoRoute(
         path: '/profile',
-        builder: (context, state) =>  ProfilePage(),
+        builder: (context, state) {
+          final tab = int.tryParse(state.uri.queryParameters['tab'] ?? "0") ?? 0;
+          return ProfilePage(initialIndex: tab);
+        },
       ),
     ],
   );

@@ -7,7 +7,10 @@ import '../../core/theme/app_style.dart';
 
 class ProfilePage extends StatefulWidget {
   final String username="Oussama Bensbaa";
-  ProfilePage({Key? key}) : super(key: key);
+  final int initialIndex;
+
+  ProfilePage({Key? key, this.initialIndex = 0}) : super(key: key);
+
   @override
   State<ProfilePage> createState() => _ProfilePage();
 }
@@ -43,18 +46,19 @@ class _ProfilePage extends State<ProfilePage> {
   final List<String> _buttonTitles = ['Compte', 'Notification', 'Confidentiality'];
   final List<String> _buttonIcons = [
     "assets/icons/profile_icon.png",
-    "assets/icons/notifications_icon.png",
+    "assets/icons/notification_icon.png",
     "assets/icons/document_icon.png"
   ];
 
   @override
   void initState() {
     super.initState();
+    _selectedButtonIndex = widget.initialIndex;
     // Initialize with some default values
     _nameController.text = "Oussama";
     _familyNameController.text = "Bensbaa";
-    _emailController.text = "oussama@example.com";
-    _dobController.text = "15/03/1990";
+    _emailController.text = "oussama.bensbaa@bensds.com";
+    _dobController.text = "25/09/1993";
     _companyController.text = "Qanaty Company";
   }
 
@@ -436,7 +440,7 @@ class _ProfilePage extends State<ProfilePage> {
                       // Submit Button
                       ElevatedButton(
                         onPressed: _submitForm,
-                        child: Text('Save Profile'),
+                        child: Text('Sauvegarder Profile'),
                         style: ElevatedButton.styleFrom(
                           padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                           shape: RoundedRectangleBorder(
@@ -510,7 +514,7 @@ class _ProfilePage extends State<ProfilePage> {
                 children: [
                   SizedBox(height: 20),
                   Text(
-                    "Notification Settings",
+                    "Notification paramétre",
                     style: Appstyle.textXL_B,
                   ),
                   SizedBox(height: 30),
@@ -532,12 +536,12 @@ class _ProfilePage extends State<ProfilePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Issue Activity",
+                                "Activité des incidents",
                                 style: Appstyle.textL_B,
                               ),
                               SizedBox(height: 8),
                               Text(
-                                "Send me email notifications for issue activity",
+                                "M’envoyer des notifications par e-mail pour l’activité des incidents.",
                                 style: Appstyle.textM.copyWith(color: Colors.grey.shade600),
                               ),
                             ],
@@ -574,12 +578,12 @@ class _ProfilePage extends State<ProfilePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Tracking Activity",
+                                "Suivi des activités",
                                 style: Appstyle.textL_B,
                               ),
                               SizedBox(height: 8),
                               Text(
-                                "Send me notifications when someone's tracked time in tasks",
+                                "M’envoyer des notifications lorsque du temps est enregistré sur des tâches",
                                 style: Appstyle.textM.copyWith(color: Colors.grey.shade600),
                               ),
                             ],
@@ -616,12 +620,12 @@ class _ProfilePage extends State<ProfilePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "New Comments",
+                                "Nouveau commneatiare",
                                 style: Appstyle.textL_B,
                               ),
                               SizedBox(height: 8),
                               Text(
-                                "Send me notifications for new comments on my tasks",
+                                "Notifier les commentaires sur mes tâches",
                                 style: Appstyle.textM.copyWith(color: Colors.grey.shade600),
                               ),
                             ],
@@ -658,12 +662,12 @@ class _ProfilePage extends State<ProfilePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Quiet Hours",
+                                "Heures de silence",
                                 style: Appstyle.textL_B,
                               ),
                               SizedBox(height: 8),
                               Text(
-                                "Don't send me notifications after 9:00 PM",
+                                "Ne pas m’envoyer de notifications après 21h00",
                                 style: Appstyle.textM.copyWith(color: Colors.grey.shade600),
                               ),
                             ],
@@ -691,10 +695,10 @@ class _ProfilePage extends State<ProfilePage> {
                       onPressed: () {
                         // Save notification settings
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Notification settings saved successfully!')),
+                          SnackBar(content: Text('Paramètres de notification enregistrés avec succès !!')),
                         );
                       },
-                      child: Text('Save Settings'),
+                      child: Text('Enregistrer les paramètres'),
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                         shape: RoundedRectangleBorder(
@@ -738,7 +742,7 @@ class _ProfilePage extends State<ProfilePage> {
                 children: [
                   SizedBox(height: 20),
                   Text(
-                    "Confidentiality Settings",
+                    "Paramètres de confidentialité",
                     style: Appstyle.textXL_B,
                   ),
                   SizedBox(height: 30),
@@ -760,12 +764,12 @@ class _ProfilePage extends State<ProfilePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Data Encryption",
+                                "Cryptage des données",
                                 style: Appstyle.textL_B,
                               ),
                               SizedBox(height: 8),
                               Text(
-                                "Enable end-to-end encryption for all your data to ensure maximum security and privacy",
+                                "Activez le chiffrement de bout en bout pour toutes vos données afin de garantir une sécurité et une confidentialité maximales",
                                 style: Appstyle.textM.copyWith(color: Colors.grey.shade600),
                               ),
                             ],
@@ -802,12 +806,12 @@ class _ProfilePage extends State<ProfilePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Two-Factor Authentication",
+                                "Authentification à deux facteurs",
                                 style: Appstyle.textL_B,
                               ),
                               SizedBox(height: 8),
                               Text(
-                                "Add an extra layer of security to your account by requiring a verification code",
+                                "Ajoutez une couche supplémentaire de sécurité à votre compte en exigeant un code de vérification.",
                                 style: Appstyle.textM.copyWith(color: Colors.grey.shade600),
                               ),
                             ],
@@ -844,12 +848,12 @@ class _ProfilePage extends State<ProfilePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Activity Logging",
+                                "Journalisation des activités",
                                 style: Appstyle.textL_B,
                               ),
                               SizedBox(height: 8),
                               Text(
-                                "Keep track of all account activities and access logs for security monitoring",
+                                "Suivez toutes les activités du compte et les journaux d’accès pour la surveillance de la sécurité.",
                                 style: Appstyle.textM.copyWith(color: Colors.grey.shade600),
                               ),
                             ],
@@ -877,10 +881,10 @@ class _ProfilePage extends State<ProfilePage> {
                       onPressed: () {
                         // Save confidentiality settings
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Confidentiality settings saved successfully!')),
+                          SnackBar(content: Text('Paramètres de confidentialité enregistrés avec succès !')),
                         );
                       },
-                      child: Text('Save Settings'),
+                      child: Text('Enregistrer les paramètres'),
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                         shape: RoundedRectangleBorder(
