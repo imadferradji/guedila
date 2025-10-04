@@ -22,7 +22,7 @@ class SideBarWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         child: Container(
           margin: const EdgeInsets.symmetric(vertical: 6),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
           decoration: BoxDecoration(
             color: isActive ? Appstyle.blueC : Colors.transparent,
             borderRadius: BorderRadius.circular(12),
@@ -35,7 +35,7 @@ class SideBarWidget extends StatelessWidget {
                 height: 28,
                 color: isActive ? Colors.white : Appstyle.grisC,
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 12),
               Text(
                 text,
                 style: Appstyle.textM_B.copyWith(
@@ -86,6 +86,10 @@ class SideBarWidget extends StatelessWidget {
                 iconPath: "assets/icons/document_icon.png",
                 text: "Document",
                 route: "/document"),
+            buildMenuItem(
+                iconPath: "assets/icons/chauffeur_icon.png",
+                text: "Chauffeur & Camion",
+                route: "/drivertruck"),
             buildMenuItem(
                 iconPath: "assets/icons/profile_icon.png",
                 text: "Profile",

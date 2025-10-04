@@ -5,6 +5,7 @@ import 'package:qanaty/screens/auth/sign_up.dart';
 import 'package:qanaty/screens/commande/commande_page.dart';
 import 'package:qanaty/screens/dashboard/dashboard_page.dart';
 import 'package:qanaty/screens/document/document_page.dart';
+import 'package:qanaty/screens/driver_truck/driver_truck.dart';
 import 'package:qanaty/screens/profile/profile_page.dart';
 import 'package:qanaty/screens/virement/virement_page.dart';
 
@@ -38,10 +39,14 @@ class AppRouter {
         path: '/virement',
         builder: (context, state) =>  VirementPage(),
       ),
+      GoRoute(
+        path: '/drivertruck',
+        builder: (context, state) =>  DriverTruckPage(),
+      ),
 
       GoRoute(
         path: '/profile',
-        builder: (context, state) => const ProfilePage(),
+        builder: (context, state) =>  ProfilePage(),
       ),
     ],
   );
