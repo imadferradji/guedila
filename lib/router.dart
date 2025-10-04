@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+
 import 'package:go_router/go_router.dart';
 import 'package:qanaty/screens/auth/login_page.dart';
 import 'package:qanaty/screens/auth/sign_up.dart';
@@ -32,11 +32,11 @@ class AppRouter {
       ),
       GoRoute(
         path: '/document',
-        builder: (context, state) => DocumentPage(),
+        builder: (context, state) =>  DocumentPage(),
       ),
       GoRoute(
         path: '/virement',
-        builder: (context, state) => VirementPage(),
+        builder: (context, state) =>  VirementPage(),
       ),
 
       GoRoute(

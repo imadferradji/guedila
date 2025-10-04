@@ -19,16 +19,16 @@ class VirementWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 280,
-      height: 250,
+      height: 170,
       decoration: BoxDecoration(
         color: Appstyle.blanc,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: Appstyle.gris.withOpacity(0.3),
-            spreadRadius: 4,
-            blurRadius: 12,
-            offset: const Offset(0, 6),
+            spreadRadius: 1,
+            blurRadius: 2,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -92,7 +92,7 @@ class VirementWidget extends StatelessWidget {
                 const SizedBox(height: 12),
                 Text(
                   etat, // "181 Palette"
-                  style: Appstyle.textM_B.copyWith(color: Appstyle.vert),
+                  style: etat=="En attente"?Appstyle.textM_B.copyWith(color: Appstyle.gold):Appstyle.textM_B.copyWith(color: Appstyle.vert),
                   textAlign: TextAlign.center,
                 ),
               ],

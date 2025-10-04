@@ -14,17 +14,17 @@ class SoldeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 250,
-      height: 150,
+      width: 220,
+      height: 120,
       decoration: BoxDecoration(
         color: Appstyle.blanc,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: Appstyle.gris.withOpacity(0.3),
-            spreadRadius: 4,
-            blurRadius: 12,
-            offset: const Offset(0, 6),
+            spreadRadius: 1,
+            blurRadius: 2,
+            offset: const Offset(0, 1),
           ),
         ],
       ),
@@ -40,7 +40,6 @@ class SoldeWidget extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             // Cercle avec texte au centre
-            const SizedBox(height: 12),
             // Texte du bas
             Text(
               "Solde", // "181 Palette"
@@ -49,7 +48,11 @@ class SoldeWidget extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Text(
-              dernier_modif+" dernier modification", // "181 Palette"
+              dernier_modif, // "181 Palette"
+              style: Appstyle.textS_B.copyWith(color: Appstyle.noir),
+              textAlign: TextAlign.center,
+            ), Text(
+             "Dernier modification", // "181 Palette"
               style: Appstyle.textS_B.copyWith(color: Appstyle.noir),
               textAlign: TextAlign.center,
             ),

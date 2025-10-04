@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:qanaty/router.dart';
+import 'package:qanaty/router.dart' show AppRouter;
 
 void main() {
+
   runApp(const MyApp());
+
 }
 
 class MyApp extends StatelessWidget {

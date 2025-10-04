@@ -5,7 +5,6 @@ import 'package:qanaty/core/widget/virement_widget.dart';
 import '../../data/models/produit.dart';
 import '../../data/models/virement.dart';
 
-
 final TextEditingController numeroController = TextEditingController();
 final TextEditingController montantController = TextEditingController();
 final TextEditingController dateController = TextEditingController();
@@ -14,44 +13,45 @@ final TextEditingController dateController = TextEditingController();
 String? imagePath;
 
 /// Exemple de produits
-double prix_palette=10000.00;
-double solde=100000.0;
-bool virement_confirme =true;
+double prix_palette = 10000.00;
+double solde = 100000.0;
+bool virement_confirme = true;
 
 /// Fonction pour afficher le Dialog
 void showNouvelleVirementDialog(BuildContext context) {
   showDialog(
     context: context,
-    builder: (context) {
-      return VirementDialog();
-    },
+    builder: (context) => VirementDialog(),
   );
 }
-
-
 
 /// Dialog multi-étapes
 class VirementDialog extends StatefulWidget {
   @override
-  _VirementDialog createState() => _VirementDialog();
+  _VirementDialogState createState() => _VirementDialogState();
 }
 
-class _VirementDialog extends State<VirementDialog> {
+class _VirementDialogState extends State<VirementDialog> {
   int currentStep = 0;
-  // Données étape 1
-  int currentIndex = 0;
-  // ✅ Déclaration du contrôleur pour le carrousel
-  late PageController _pageController;
+
+  // FocusNodes pour gérer le focus des champs
+  final FocusNode numeroFocus = FocusNode();
+  final FocusNode montantFocus = FocusNode();
+  final FocusNode dateFocus = FocusNode();
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(viewportFraction: 0.7);
+    numeroFocus.addListener(() => setState(() {}));
+    montantFocus.addListener(() => setState(() {}));
+    dateFocus.addListener(() => setState(() {}));
   }
 
   @override
   void dispose() {
-    _pageController.dispose();
+    numeroFocus.dispose();
+    montantFocus.dispose();
+    dateFocus.dispose();
     super.dispose();
   }
 
@@ -73,7 +73,7 @@ class _VirementDialog extends State<VirementDialog> {
             Expanded(child: _buildStepContent()),
             Row(
               children: [
-                if (currentStep > 0 && currentStep<2)
+                if (currentStep > 0 && currentStep < 2)
                   TextButton(
                     onPressed: () => setState(() => currentStep--),
                     child: const Text("← Retour"),
@@ -86,27 +86,25 @@ class _VirementDialog extends State<VirementDialog> {
                         icon: Icons.check,
                         iconOnRight: true,
                         color: Appstyle.rose,
-                        onPressed: () {
-                          Navigator.pop(context); // ferme la fenêtre ou revient à l'accueil
-                        },
+                        onPressed: () => Navigator.pop(context),
                       ),
                     ),
                   )
-
-               else ...[ Spacer(),
-                MainButton(
-                  text: currentStep==1?"Confirmer":"Suivant",
-                  icon: Icons.arrow_forward,
-                  iconOnRight: true,
-                  color: Appstyle.rose,
-                  onPressed: () {
-                    if (currentStep < 2) {
-                      setState(() => currentStep++);
-                    } else {
-                      Navigator.pop(context);
-                    }
-                  },
-                ),
+                else ...[
+                  Spacer(),
+                  MainButton(
+                    text: currentStep == 1 ? "Confirmer" : "Suivant",
+                    icon: Icons.arrow_forward,
+                    iconOnRight: true,
+                    color: Appstyle.rose,
+                    onPressed: () {
+                      if (currentStep < 2) {
+                        setState(() => currentStep++);
+                      } else {
+                        Navigator.pop(context);
+                      }
+                    },
+                  ),
                 ],
               ],
             ),
@@ -122,21 +120,60 @@ class _VirementDialog extends State<VirementDialog> {
       case 0:
         return _buildStep1ProduitQuantite();
       case 1:
-        return _buildStep2ProduitQuantite();
+        return _buildStep2Confirmation();
       case 2:
-        return _buildStep3Confirmation();
+        return _buildStep3Message();
       default:
         return SizedBox.shrink();
     }
   }
 
+  /// Widget générique pour un TextField stylisé
+  Widget _buildTextField({
+    required String label,
+    required TextEditingController controller,
+    required FocusNode focusNode,
+    bool readOnly = false,
+    TextInputType keyboardType = TextInputType.text,
+    VoidCallback? onTap,
+  }) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeInOut,
+      decoration: BoxDecoration(
+        color: focusNode.hasFocus ? Appstyle.blueC.withOpacity(0.2) : Appstyle.grisC.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: focusNode.hasFocus ? Colors.blue : Colors.transparent,
+          width: 1.5,
+        ),
+      ),
+      child: TextField(
+        controller: controller,
+        focusNode: focusNode,
+        readOnly: readOnly,
+        keyboardType: keyboardType,
+        onTap: onTap,
+        style: TextStyle(
+          color: Colors.grey[800],
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: TextStyle(color: Colors.grey[600], fontSize: 14),
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+        ),
+      ),
+    );
+  }
+
   /// Étape 1 : Produit & Quantité
   Widget _buildStep1ProduitQuantite() {
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // TItre
         Text(
           "Nouvelle virement",
           style: Appstyle.textS_B.copyWith(color: Appstyle.noir),
@@ -157,38 +194,25 @@ class _VirementDialog extends State<VirementDialog> {
             ),
           ],
         ),
-      // --- Numero virement ---
         const SizedBox(height: 20),
-
-        TextField(
+        _buildTextField(
+          label: "Numéro de virement",
           controller: numeroController,
-          decoration: InputDecoration(
-            labelText: "Numéro de virement",
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-          ),
+          focusNode: numeroFocus,
         ),
         const SizedBox(height: 16),
-
-        // Champ Montant (numérique seulement)
-        TextField(
+        _buildTextField(
+          label: "Montant (DA)",
           controller: montantController,
+          focusNode: montantFocus,
           keyboardType: TextInputType.number,
-          decoration: InputDecoration(
-            labelText: "Montant (DA)",
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-          ),
         ),
         const SizedBox(height: 16),
-
-        // Champ Date
-        TextField(
+        _buildTextField(
+          label: "Date de virement",
           controller: dateController,
+          focusNode: dateFocus,
           readOnly: true,
-          decoration: InputDecoration(
-            labelText: "Date de virement",
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-            suffixIcon: Icon(Icons.calendar_today),
-          ),
           onTap: () async {
             DateTime? picked = await showDatePicker(
               context: context,
@@ -204,11 +228,9 @@ class _VirementDialog extends State<VirementDialog> {
           },
         ),
         const SizedBox(height: 16),
-
         // Bouton pour choisir une image
         GestureDetector(
           onTap: () {
-            // TODO: Ajouter image picker (ex: image_picker package)
             setState(() {
               imagePath = "assets/images/recu.png"; // exemple
             });
@@ -227,13 +249,12 @@ class _VirementDialog extends State<VirementDialog> {
                 : Image.asset(imagePath!, fit: BoxFit.contain),
           ),
         ),
-
       ],
     );
   }
 
-  /// Étape 2 : Confrimation
-  Widget _buildStep2ProduitQuantite() {
+  /// Étape 2 : Confirmation du virement
+  Widget _buildStep2Confirmation() {
     Virement virement = Virement(
       numero: numeroController.text,
       montant: double.tryParse(montantController.text) ?? 0.0,
@@ -247,7 +268,6 @@ class _VirementDialog extends State<VirementDialog> {
       children: [
         Text("Confirmation du virement", style: Appstyle.textS_B.copyWith(color: Appstyle.noir)),
         const SizedBox(height: 60),
-
         VirementWidget(
           numero: virement.numero,
           montant: "${virement.montant.toStringAsFixed(2)} DA",
@@ -255,7 +275,6 @@ class _VirementDialog extends State<VirementDialog> {
           etat: virement.etat,
         ),
         const SizedBox(height: 60),
-
         if (virement.imagePath != null)
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
@@ -265,35 +284,28 @@ class _VirementDialog extends State<VirementDialog> {
     );
   }
 
-
-  /// Étape 3 : Message
-  Widget _buildStep3Confirmation() {
+  /// Étape 3 : Message final
+  Widget _buildStep3Message() {
     return Column(
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              virement_confirme?"Virement confirmé":"Virement echoué",
-              style: Appstyle.textS_B.copyWith(color: Appstyle.noir),
-            ),
-            const SizedBox(height: 120),
-            Text(
-              virement_confirme?"Votre virement est bien crée !!":"Solde client insufisant !!",
-              style: Appstyle.textS_B.copyWith(color: Appstyle.noir),
-            ),
-            const SizedBox(height:40),
-            Image.asset(
-              virement_confirme?"assets/icons/nike_icon.png":"assets/icons/croix_icon.png",
-              width: 150,
-              height: 150,
-              fit: BoxFit.contain,
-            ),
-          ],
+        Text(
+          virement_confirme ? "Virement confirmé" : "Virement échoué",
+          style: Appstyle.textS_B.copyWith(color: Appstyle.noir),
+        ),
+        const SizedBox(height: 120),
+        Text(
+          virement_confirme ? "Votre virement est bien créé !" : "Solde client insuffisant !",
+          style: Appstyle.textS_B.copyWith(color: Appstyle.noir),
+        ),
+        const SizedBox(height: 40),
+        Image.asset(
+          virement_confirme ? "assets/icons/nike_icon.png" : "assets/icons/croix_icon.png",
+          width: 150,
+          height: 150,
+          fit: BoxFit.contain,
         ),
       ],
     );
-
   }
 }
 

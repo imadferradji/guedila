@@ -1,72 +1,21 @@
-
 import 'package:flutter/material.dart';
 import 'package:qanaty/core/utilis/responsive.dart';
 import 'package:qanaty/core/widget/acount_widget.dart';
 import 'package:qanaty/core/widget/main_button.dart';
 import 'package:qanaty/core/widget/periode_selector.dart';
 import 'package:qanaty/core/widget/side_bar_widget.dart';
-
 import '../../core/theme/app_style.dart';
+import '../../core/widget/commander_produit_dialog.dart';
 import '../../core/widget/facture_widget.dart';
-import '../../core/widget/produit_vendu_widget.dart';
 import '../../core/widget/search_field.dart';
 import '../../core/widget/solde_widget.dart';
-import '../../data/models/produit.dart';
+import '../../core/widget/virement_dialog.dart';
 
 class CommandePage extends StatefulWidget {
   final String username="Oussama Bensbaa";
-  final List<Produit> produits = [
-    Produit(
-      nom: "Bouteille 1.5 L",
-      image: "assets/icons/eau_15l_icon.png",
-      bouteillesParPalette: 100,
-      prix: 22800,
-      abrev: "1.5L", color: Appstyle.pie_creme,
+  final double solde=100000.00;
 
-    ), Produit(
-      nom: "Bouteille 0.5 L",
-      image: "assets/icons/eau_15l_icon.png",
-      bouteillesParPalette: 100,
-      prix: 22800,
-      abrev: "0.5L", color: Appstyle.pie_orange,
 
-    ),
-    Produit(
-      nom: "Bouteille 1 L",
-      image: "assets/icons/eau_1l_icon.png",
-      bouteillesParPalette: 120,
-      prix: 18000,
-      abrev: "1L", color: Appstyle.pie_blueC,
-    ),
-    Produit(
-      nom: "Bouteille 2 L",
-      image: "assets/icons/eau_2l_icon.png",
-      bouteillesParPalette: 80,
-      prix: 25000,
-      abrev: "2L", color: Appstyle.pie_blueF,
-    ),
-    Produit(
-      nom: "Bouteille 0.33 Cl",
-      image: "assets/icons/eau_33l_icon.png",
-      bouteillesParPalette: 80,
-      prix: 25000,
-      abrev: "0.33L", color: Appstyle.pie_move,
-    ),
-    Produit(
-      nom: "Bouteille 0.33 L Sport",
-      image: "assets/icons/eau_33l_sport_icon.png",
-      bouteillesParPalette: 80,
-      prix: 25000,
-      abrev: "0.33L S", color: Appstyle.pie_grena,
-    ),
-    Produit(
-      nom: "Bouteille 0.5 L Sport",
-      image: "assets/icons/eau_05l_sport_icon.png",
-      bouteillesParPalette: 80,
-      prix: 25000,
-      abrev: "0.5L S", color: Appstyle.pie_vert,
-    ),
-  ];
   CommandePage({Key? key}) : super(key: key);
   @override
   State<CommandePage> createState() => _CommandePage();
@@ -121,6 +70,7 @@ class _CommandePage extends State<CommandePage> {
                         Expanded(
                           child: Column(
                             children: [
+
                               Row (
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
@@ -139,70 +89,88 @@ class _CommandePage extends State<CommandePage> {
                                   SizedBox(width: 16,),
                                 ],
                               ),
+
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text("Commande", style:Appstyle.textXL_B.copyWith(color: Appstyle.noir)),
-                                  SoldeWidget(solde: "130204050.00 DA",dernier_modif :"24/02/2025"),
+                                  SoldeWidget(solde: solde.toString()+".00 DA",dernier_modif :"24/02/2025"),
                                 ],
                               ),
+
                               SizedBox(height: paddingV,),
+
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   SizedBox(width: 1,),
                                   PeriodSelector(),
-                                  MainButton(text: "Nouveau", color: Appstyle.rose, onPressed: (){}),
+                                  MainButton(text: "Nouveau", color: Appstyle.rose,
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        barrierDismissible: true, // empêche de fermer en cliquant dehors
+                                        barrierColor: Appstyle.blueF.withOpacity(0.3), // 👈 ici tu changes la couleur du fond
+                                        builder: (context) {
+                                          return CommanderProduitDialog(solde: widget.solde); // ton popup
+                                        },
+                                      );
+                                    },
+
+                                  ),
                                 ],
                               ),
+
                               SizedBox(height: paddingV,),
+
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text("Mes commande", style: Appstyle.textL_B,),
-                                    SizedBox(
-                                      width: 412,
-                                      child:  SearchField(controller: _controller,),
-                                    )
+                                children: [
+                                  Text("Mes commande", style: Appstyle.textL_B,),
+                                  SizedBox(
+                                    width: 412,
+                                    child:  SearchField(controller: _controller,),
+                                  )
 
-                                  ],
+                                ],
                               ),SizedBox(height: paddingV,),
-                            Container(
-                              width: double.infinity,
-                              height: adjustedHeight*0.5,
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  children: [
-                                    FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
-                                    SizedBox(height: 10,),
-                                    FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
-                                    SizedBox(height: 10,),
-                                    FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
-                                    SizedBox(height: 10,),
-                                    FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
-                                    SizedBox(height: 10,),
-                                    FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
-                                    SizedBox(height: 10,),
-                                    FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
-                                    SizedBox(height: 10,),
-                                    FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
-                                    SizedBox(height: 10,),
-                                    FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
-                                    SizedBox(height: 10,),
-                                    FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
-                                    SizedBox(height: 10,),
-                                    FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
-                                    SizedBox(height: 10,),
-                                    FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
-                                    SizedBox(height: 10,),
-                                    FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
-                                    SizedBox(height: 10,),
-                                    FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
 
-                                  ],
+                              Container(
+                                width: double.infinity,
+                                height: adjustedHeight*0.5,
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    children: [
+                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "Livrée"),
+                                      SizedBox(height: 15,),
+                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
+                                      SizedBox(height: 15,),
+                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
+                                      SizedBox(height: 15,),
+                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "Permis"),
+                                      SizedBox(height: 15,),
+                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "Permis"),
+                                      SizedBox(height: 15,),
+                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "Livrée"),
+                                      SizedBox(height: 15,),
+                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "Validé"),
+                                      SizedBox(height: 15,),
+                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "Livrée"),
+                                      SizedBox(height: 15,),
+                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "Livrée"),
+                                      SizedBox(height: 15,),
+                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "Validé"),
+                                      SizedBox(height: 15,),
+                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "Permis"),
+                                      SizedBox(height: 15,),
+                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "Permis"),
+                                      SizedBox(height: 15,),
+                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
+
+                                    ],
                                   ),
-                              ),
-                            )
+                                ),
+                              )
 
 
                             ],
