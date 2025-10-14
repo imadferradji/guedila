@@ -1,15 +1,73 @@
 import 'package:flutter/material.dart';
 import 'package:qanaty/core/utilis/responsive.dart';
 import 'package:qanaty/core/widget/acount_widget.dart';
+import 'package:qanaty/core/widget/main_button.dart';
+import 'package:qanaty/core/widget/periode_selector.dart';
 import 'package:qanaty/core/widget/side_bar_widget.dart';
+
 import '../../core/theme/app_style.dart';
+import '../../core/widget/etat_widget.dart';
+import '../../core/widget/facture_widget.dart';
+import '../../core/widget/facture_widget_plus_imprimer.dart';
+import '../../core/widget/search_field.dart';
+import '../../core/widget/solde_widget.dart';
+import '../../data/models/produit.dart';
 
 class ProfilePage extends StatefulWidget {
   final String username="Oussama Bensbaa";
-  final int initialIndex;
+  final List<Produit> produits = [
+    Produit(
+      nom: "Bouteille 1.5 L",
+      image: "assets/icons/eau_15l_icon.png",
+      bouteillesParPalette: 100,
+      prix: 22800,
+      abrev: "1.5L", color: Appstyle.pie_creme,
 
-  ProfilePage({Key? key, this.initialIndex = 0}) : super(key: key);
+    ), Produit(
+      nom: "Bouteille 0.5 L",
+      image: "assets/icons/eau_15l_icon.png",
+      bouteillesParPalette: 100,
+      prix: 22800,
+      abrev: "0.5L", color: Appstyle.pie_orange,
 
+    ),
+    Produit(
+      nom: "Bouteille 1 L",
+      image: "assets/icons/eau_1l_icon.png",
+      bouteillesParPalette: 120,
+      prix: 18000,
+      abrev: "1L", color: Appstyle.pie_blueC,
+    ),
+    Produit(
+      nom: "Bouteille 2 L",
+      image: "assets/icons/eau_2l_icon.png",
+      bouteillesParPalette: 80,
+      prix: 25000,
+      abrev: "2L", color: Appstyle.pie_blueF,
+    ),
+    Produit(
+      nom: "Bouteille 0.33 Cl",
+      image: "assets/icons/eau_33l_icon.png",
+      bouteillesParPalette: 80,
+      prix: 25000,
+      abrev: "0.33L", color: Appstyle.pie_move,
+    ),
+    Produit(
+      nom: "Bouteille 0.33 L Sport",
+      image: "assets/icons/eau_33l_sport_icon.png",
+      bouteillesParPalette: 80,
+      prix: 25000,
+      abrev: "0.33L S", color: Appstyle.pie_grena,
+    ),
+    Produit(
+      nom: "Bouteille 0.5 L Sport",
+      image: "assets/icons/eau_05l_sport_icon.png",
+      bouteillesParPalette: 80,
+      prix: 25000,
+      abrev: "0.5L S", color: Appstyle.pie_vert,
+    ),
+  ];
+  ProfilePage({Key? key}) : super(key: key);
   @override
   State<ProfilePage> createState() => _ProfilePage();
 }
@@ -45,19 +103,18 @@ class _ProfilePage extends State<ProfilePage> {
   final List<String> _buttonTitles = ['Compte', 'Notification', 'Confidentiality'];
   final List<String> _buttonIcons = [
     "assets/icons/profile_icon.png",
-    "assets/icons/notification_icon.png",
+    "assets/icons/notifications_icon.png",
     "assets/icons/document_icon.png"
   ];
 
   @override
   void initState() {
     super.initState();
-    _selectedButtonIndex = widget.initialIndex;
     // Initialize with some default values
     _nameController.text = "Oussama";
     _familyNameController.text = "Bensbaa";
-    _emailController.text = "oussama.bensbaa@bensds.com";
-    _dobController.text = "25/09/1993";
+    _emailController.text = "oussama@example.com";
+    _dobController.text = "15/03/1990";
     _companyController.text = "Qanaty Company";
   }
 
@@ -369,7 +426,7 @@ class _ProfilePage extends State<ProfilePage> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(12),
                           child: Image.asset(
-                            "assets/images/profile2.jpg",
+                            "assets/images/profile.jpg",
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -439,7 +496,7 @@ class _ProfilePage extends State<ProfilePage> {
                       // Submit Button
                       ElevatedButton(
                         onPressed: _submitForm,
-                        child: Text('Sauvegarder Profile'),
+                        child: Text('Save Profile'),
                         style: ElevatedButton.styleFrom(
                           padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                           shape: RoundedRectangleBorder(
@@ -513,7 +570,7 @@ class _ProfilePage extends State<ProfilePage> {
                 children: [
                   SizedBox(height: 20),
                   Text(
-                    "Notification paramétre",
+                    "Notification Settings",
                     style: Appstyle.textXL_B,
                   ),
                   SizedBox(height: 30),
@@ -535,12 +592,12 @@ class _ProfilePage extends State<ProfilePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Activité des incidents",
+                                "Issue Activity",
                                 style: Appstyle.textL_B,
                               ),
                               SizedBox(height: 8),
                               Text(
-                                "M’envoyer des notifications par e-mail pour l’activité des incidents.",
+                                "Send me email notifications for issue activity",
                                 style: Appstyle.textM.copyWith(color: Colors.grey.shade600),
                               ),
                             ],
@@ -577,12 +634,12 @@ class _ProfilePage extends State<ProfilePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Suivi des activités",
+                                "Tracking Activity",
                                 style: Appstyle.textL_B,
                               ),
                               SizedBox(height: 8),
                               Text(
-                                "M’envoyer des notifications lorsque du temps est enregistré sur des tâches",
+                                "Send me notifications when someone's tracked time in tasks",
                                 style: Appstyle.textM.copyWith(color: Colors.grey.shade600),
                               ),
                             ],
@@ -619,12 +676,12 @@ class _ProfilePage extends State<ProfilePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Nouveau commneatiare",
+                                "New Comments",
                                 style: Appstyle.textL_B,
                               ),
                               SizedBox(height: 8),
                               Text(
-                                "Notifier les commentaires sur mes tâches",
+                                "Send me notifications for new comments on my tasks",
                                 style: Appstyle.textM.copyWith(color: Colors.grey.shade600),
                               ),
                             ],
@@ -661,12 +718,12 @@ class _ProfilePage extends State<ProfilePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Heures de silence",
+                                "Quiet Hours",
                                 style: Appstyle.textL_B,
                               ),
                               SizedBox(height: 8),
                               Text(
-                                "Ne pas m’envoyer de notifications après 21h00",
+                                "Don't send me notifications after 9:00 PM",
                                 style: Appstyle.textM.copyWith(color: Colors.grey.shade600),
                               ),
                             ],
@@ -694,10 +751,10 @@ class _ProfilePage extends State<ProfilePage> {
                       onPressed: () {
                         // Save notification settings
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Paramètres de notification enregistrés avec succès !!')),
+                          SnackBar(content: Text('Notification settings saved successfully!')),
                         );
                       },
-                      child: Text('Enregistrer les paramètres'),
+                      child: Text('Save Settings'),
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                         shape: RoundedRectangleBorder(
@@ -741,7 +798,7 @@ class _ProfilePage extends State<ProfilePage> {
                 children: [
                   SizedBox(height: 20),
                   Text(
-                    "Paramètres de confidentialité",
+                    "Confidentiality Settings",
                     style: Appstyle.textXL_B,
                   ),
                   SizedBox(height: 30),
@@ -763,12 +820,12 @@ class _ProfilePage extends State<ProfilePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Cryptage des données",
+                                "Data Encryption",
                                 style: Appstyle.textL_B,
                               ),
                               SizedBox(height: 8),
                               Text(
-                                "Activez le chiffrement de bout en bout pour toutes vos données afin de garantir une sécurité et une confidentialité maximales",
+                                "Enable end-to-end encryption for all your data to ensure maximum security and privacy",
                                 style: Appstyle.textM.copyWith(color: Colors.grey.shade600),
                               ),
                             ],
@@ -805,12 +862,12 @@ class _ProfilePage extends State<ProfilePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Authentification à deux facteurs",
+                                "Two-Factor Authentication",
                                 style: Appstyle.textL_B,
                               ),
                               SizedBox(height: 8),
                               Text(
-                                "Ajoutez une couche supplémentaire de sécurité à votre compte en exigeant un code de vérification.",
+                                "Add an extra layer of security to your account by requiring a verification code",
                                 style: Appstyle.textM.copyWith(color: Colors.grey.shade600),
                               ),
                             ],
@@ -847,12 +904,12 @@ class _ProfilePage extends State<ProfilePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Journalisation des activités",
+                                "Activity Logging",
                                 style: Appstyle.textL_B,
                               ),
                               SizedBox(height: 8),
                               Text(
-                                "Suivez toutes les activités du compte et les journaux d’accès pour la surveillance de la sécurité.",
+                                "Keep track of all account activities and access logs for security monitoring",
                                 style: Appstyle.textM.copyWith(color: Colors.grey.shade600),
                               ),
                             ],
@@ -880,10 +937,10 @@ class _ProfilePage extends State<ProfilePage> {
                       onPressed: () {
                         // Save confidentiality settings
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Paramètres de confidentialité enregistrés avec succès !')),
+                          SnackBar(content: Text('Confidentiality settings saved successfully!')),
                         );
                       },
-                      child: Text('Enregistrer les paramètres'),
+                      child: Text('Save Settings'),
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                         shape: RoundedRectangleBorder(
