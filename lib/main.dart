@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:qanaty/router.dart' show AppRouter;
+import 'package:qanaty/router.dart'; // import your router
 
 void main() {
   runApp(const MyApp());
@@ -11,10 +11,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routerConfig: AppRouter.router,
+      routerConfig: AppRouter.router, // ✅ connect the GoRouter
       debugShowCheckedModeBanner: false,
-      title: 'Portail Client',
+      title: 'QANATY',
       theme: ThemeData(
+        useMaterial3: true,
         primarySwatch: Colors.blue,
       ),
     );

@@ -1,18 +1,141 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'AboutYou.dart';
+import 'api_service.dart';
 
-class PhoneValidation extends StatelessWidget {
+class PhoneValidation extends StatefulWidget {
   const PhoneValidation({super.key});
+
+  @override
+  _PhoneValidationState createState() => _PhoneValidationState();
+}
+
+class _PhoneValidationState extends State<PhoneValidation> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final List<TextEditingController> _smsControllers = List.generate(4, (index) => TextEditingController());
+
+  String _selectedCountryCode = "+213";
+  bool _isLoading = false;
+
+  Future<void> _proceedToStep2() async {
+    // Validate all fields
+    if (_emailController.text.isEmpty ||
+        _passwordController.text.isEmpty ||
+        _phoneController.text.isEmpty ||
+        _smsControllers.any((controller) => controller.text.isEmpty)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Veuillez remplir tous les champs')),
+      );
+      return;
+    }
+
+    // Validate email format
+    final emailRegex = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
+    if (!emailRegex.hasMatch(_emailController.text.trim())) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Format email invalide')),
+      );
+      return;
+    }
+
+    // Validate password length
+    if (_passwordController.text.length < 6) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Le mot de passe doit contenir au moins 6 caractères')),
+      );
+      return;
+    }
+
+    final smsCode = _smsControllers.map((controller) => controller.text).join();
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      print('Sending request to: http://localhost:3001/auth/register/step1');
+      print('Data: ${{
+        'email': _emailController.text.trim(),
+        'phone': _phoneController.text.trim(),
+        'phoneCode': _selectedCountryCode,
+        'smsCode': smsCode,
+      }}');
+
+      final response = await ApiService.registerStep1(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+        phone: _phoneController.text.trim(),
+        phoneCode: _selectedCountryCode,
+        smsCode: smsCode,
+      );
+
+      setState(() {
+        _isLoading = false;
+      });
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        // Step 1 successful
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Téléphone validé avec succès!')),
+        );
+
+        // Navigate to step 2 with email
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AboutYou(email: _emailController.text.trim()),
+          ),
+        );
+      } else {
+        final errorData = json.decode(response.body);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorData['message'] ?? 'Erreur est survenue - Code: ${response.statusCode}')),
+        );
+      }
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      print('Error details: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erreur de connexion: Vérifiez que le serveur est démarré sur http://localhost:3001')),
+      );
+    }
+  }
+
+  void _onSmsCodeChanged(String value, int index) {
+    if (value.length == 1 && index < 3) {
+      FocusScope.of(context).nextFocus();
+    } else if (value.isEmpty && index > 0) {
+      FocusScope.of(context).previousFocus();
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Pre-fill with test data for easier testing
+    _emailController.text = "imadferradji@gmail.com";
+    _phoneController.text = "552050374";
+    _smsControllers[0].text = "5";
+    _smsControllers[1].text = "3";
+    _smsControllers[2].text = "4";
+    _smsControllers[3].text = "2";
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[200],
       body: Padding(
-        padding: const EdgeInsets.all(20.0), // Padding around the entire screen
+        padding: const EdgeInsets.all(20.0),
         child: Row(
           children: [
-            // ---- Left Blue Side ----
             Expanded(
               flex: 1,
               child: Container(
@@ -25,9 +148,12 @@ class PhoneValidation extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Image.asset(
-                        "logo.png",
+                      // Your logo here
+                      Container(
                         width: 140,
+                        height: 60,
+                        color: Colors.white,
+                        child: const Center(child: Text('LOGO', style: TextStyle(fontWeight: FontWeight.bold))),
                       ),
                       const SizedBox(height: 60),
                       const Text(
@@ -40,7 +166,6 @@ class PhoneValidation extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 40),
-                      // Stepper mockup
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: const [
@@ -55,14 +180,13 @@ class PhoneValidation extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(width: 20), // Space between the two sides
+            const SizedBox(width: 20),
 
-            // ---- Right White Form Side ----
             Expanded(
               flex: 3,
               child: Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20.0), // Rounded corners for white side
+                  borderRadius: BorderRadius.circular(20.0),
                   color: Colors.white,
                 ),
                 child: Center(
@@ -116,14 +240,16 @@ class PhoneValidation extends StatelessWidget {
                               ),
                               child: DropdownButtonHideUnderline(
                                 child: DropdownButton<String>(
-                                  value: "+213",
+                                  value: _selectedCountryCode,
                                   items: const [
                                     DropdownMenuItem(value: "+213", child: Text("+213")),
                                     DropdownMenuItem(value: "+1", child: Text("+1")),
                                     DropdownMenuItem(value: "+33", child: Text("+33")),
                                   ],
                                   onChanged: (value) {
-                                    // TODO: handle selection
+                                    setState(() {
+                                      _selectedCountryCode = value!;
+                                    });
                                   },
                                 ),
                               ),
@@ -131,8 +257,10 @@ class PhoneValidation extends StatelessWidget {
                             const SizedBox(width: 10),
                             Expanded(
                               child: TextField(
+                                controller: _phoneController,
+                                keyboardType: TextInputType.phone,
                                 decoration: InputDecoration(
-                                  hintText: "345 567-23-56",
+                                  hintText: "552050374",
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
@@ -166,8 +294,16 @@ class PhoneValidation extends StatelessWidget {
                                 border: Border.all(color: Colors.grey.shade400),
                                 borderRadius: BorderRadius.circular(8),
                               ),
-                              child: const Center(
-                                child: Text(""),
+                              child: TextField(
+                                controller: _smsControllers[index],
+                                textAlign: TextAlign.center,
+                                maxLength: 1,
+                                keyboardType: TextInputType.number,
+                                decoration: const InputDecoration(
+                                  counterText: "",
+                                  border: InputBorder.none,
+                                ),
+                                onChanged: (value) => _onSmsCodeChanged(value, index),
                               ),
                             ),
                           ),
@@ -182,9 +318,9 @@ class PhoneValidation extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8),
                             color: const Color(0xFFEBF3FF),
                           ),
-                          child: const Text(
-                            "Un SMS a été envoyé à votre numéro :\n  +1 345 673-56-67\n Valable jusqu'à 1h25",
-                            style: TextStyle(
+                          child: Text(
+                            "Un SMS a été envoyé à votre numéro :\n $_selectedCountryCode ${_phoneController.text.isNotEmpty ? _phoneController.text : '552050374'}\n Valable jusqu'à 1h25",
+                            style: const TextStyle(
                               fontFamily: "Oswald",
                               color: Colors.black87,
                             ),
@@ -204,8 +340,10 @@ class PhoneValidation extends StatelessWidget {
                         ),
                         const SizedBox(height: 6),
                         TextField(
+                          controller: _emailController,
+                          keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
-                            hintText: "youremail@gmail.com",
+                            hintText: "imadferradji@gmail.com",
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -225,9 +363,10 @@ class PhoneValidation extends StatelessWidget {
                         ),
                         const SizedBox(height: 6),
                         TextField(
+                          controller: _passwordController,
                           obscureText: true,
                           decoration: InputDecoration(
-                            suffixIcon: Icon(Icons.visibility_outlined),
+                            suffixIcon: const Icon(Icons.visibility_outlined),
                             hintText: "••••••••",
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
@@ -243,13 +382,10 @@ class PhoneValidation extends StatelessWidget {
                           child: SizedBox(
                             width: 140,
                             height: 42,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => const AboutYou()), // 👈 target page
-                                );
-                              },
+                            child: _isLoading
+                                ? const Center(child: CircularProgressIndicator())
+                                : ElevatedButton(
+                              onPressed: _proceedToStep2,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFFF482D2),
                                 shape: RoundedRectangleBorder(

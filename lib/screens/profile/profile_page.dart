@@ -1,16 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:qanaty/core/utilis/responsive.dart';
 import 'package:qanaty/core/widget/acount_widget.dart';
-import 'package:qanaty/core/widget/main_button.dart';
-import 'package:qanaty/core/widget/periode_selector.dart';
 import 'package:qanaty/core/widget/side_bar_widget.dart';
-
 import '../../core/theme/app_style.dart';
-import '../../core/widget/etat_widget.dart';
-import '../../core/widget/facture_widget.dart';
-import '../../core/widget/facture_widget_plus_imprimer.dart';
-import '../../core/widget/search_field.dart';
-import '../../core/widget/solde_widget.dart';
 import '../../data/models/produit.dart';
 
 class ProfilePage extends StatefulWidget {

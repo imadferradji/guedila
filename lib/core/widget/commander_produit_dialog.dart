@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:qanaty/core/theme/app_style.dart';
 import 'package:qanaty/core/widget/main_button.dart';
 import 'package:qanaty/core/widget/palette_selectionne.dart';
@@ -8,27 +10,26 @@ import '../../data/camions.dart';
 import '../../data/chauffeurs.dart';
 import '../../data/models/produit.dart';
 import '../../data/produits.dart';
+import '../../screens/api_service.dart';
 
 /// Exemple de panier
 Map<Produit, int> panier = {};
 bool palette = false;
-String nom_chauffeur="";
-String matricule_camion="";
+String nom_chauffeur = "";
+String matricule_camion = "";
 bool chaufeur = false;
 double prix_palette = 10000.00;
 bool commande_confirme = false;
 
-
-
 /// Fonction pour afficher le Dialog
-void showNouvelleCommandeDialog(BuildContext context, double solde) {
+void showNouvelleCommandeDialog(BuildContext context, double solde, {VoidCallback? onCommandeCreated}) {
   panier.clear();
   palette = false;
   commande_confirme = false;
   showDialog(
     context: context,
     builder: (context) {
-      return CommanderProduitDialog(solde: solde);
+      return CommanderProduitDialog(solde: solde, onCommandeCreated: onCommandeCreated);
     },
   );
 }
@@ -57,8 +58,9 @@ double get totalCommande {
 /// Dialog multi-étapes
 class CommanderProduitDialog extends StatefulWidget {
   final double solde;
+  final VoidCallback? onCommandeCreated;
 
-  const CommanderProduitDialog({super.key, required this.solde});
+  const CommanderProduitDialog({super.key, required this.solde, this.onCommandeCreated});
 
   @override
   _CommanderProduitDialog createState() => _CommanderProduitDialog();
@@ -69,6 +71,7 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
   int currentIndex = 0;
   String? selectedChauffeur;
   String? selectedCamion;
+  bool _isLoading = false;
 
   // ✅ Déclaration du contrôleur pour le carrousel
   late PageController _pageController;
@@ -88,6 +91,116 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
     super.dispose();
   }
 
+  // Function to save command to database
+  // Function to save command to database
+  // Function to save command to database
+// Function to save command to database
+  Future<void> _saveCommandeToDatabase() async {
+    if (panier.isEmpty) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      // Get user email from SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      final userEmail = prefs.getString('userEmail') ?? '';
+
+      // Calculate total amount properly
+      double totalAmount = 0;
+      String productNames = '';
+
+      panier.forEach((produit, quantite) {
+        final productTotal = produit.prix * quantite;
+        totalAmount += productTotal;
+        productNames += '${produit.nom} (x$quantite), ';
+      });
+
+      // Add palette cost if selected
+      if (palette) {
+        totalAmount += prix_palette;
+      }
+
+      // Remove trailing comma
+      if (productNames.isNotEmpty) {
+        productNames = productNames.substring(0, productNames.length - 2);
+      }
+
+      // Use the first product as main product, or combine all
+      final mainProduct = panier.keys.first;
+      final totalQuantity = totalnombrepalette;
+
+      print('💰 Calculated total: $totalAmount');
+      print('📦 Products: $productNames');
+      print('🔢 Total quantity: $totalQuantity');
+
+      // Use proper date format (YYYY-MM-DD)
+      final now = DateTime.now();
+      final formattedDate = "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+
+      final response = await ApiService.createCommande(
+        userEmail: userEmail,
+        quantite: totalQuantity.toString(), // Send total quantity
+        produit: productNames.isEmpty ? mainProduct.nom : productNames, // Send all product names
+        dateCommande: formattedDate,
+        montant: totalAmount.toStringAsFixed(2),
+        pallete: palette ? 'Oui' : 'Non',
+      );
+
+      final responseData = json.decode(response.body);
+
+      print('📊 Create commande response status: ${response.statusCode}');
+      print('📊 Response data: $responseData');
+
+      if (response.statusCode == 201 && responseData['success'] == true) {
+        print('✅ Commande created successfully! New solde: ${responseData['newSolde']}');
+
+        // Success - close dialog and refresh list
+        if (widget.onCommandeCreated != null) {
+          widget.onCommandeCreated!();
+        }
+
+        // Show success message with new solde
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Commande créée! Nouveau solde: ${responseData['newSolde'] ?? "N/A"} DA'),
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 5),
+            ),
+          );
+        }
+
+        // Wait a bit before closing to show the message
+        await Future.delayed(Duration(seconds: 2));
+        Navigator.of(context).pop();
+      } else {
+        print('❌ Failed to create commande: ${responseData['message']}');
+        // Show error
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(responseData['message'] ?? 'Erreur lors de la création'),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 5),
+          ),
+        );
+      }
+    } catch (e) {
+      print('❌ Error creating commande: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Erreur de connexion: $e'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 5),
+        ),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +238,7 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
                       children: [
                         if (currentStep > 0 && currentStep < 4)
                           TextButton(
-                            onPressed: () => setState(() => currentStep--),
+                            onPressed: _isLoading ? null : () => setState(() => currentStep--),
                             child: const Text("← Retour"),
                           ),
                         if (currentStep == 4)
@@ -136,9 +249,7 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
                                 icon: Icons.check,
                                 iconOnRight: true,
                                 color: Appstyle.rose,
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
+                                onPressed: _isLoading ? () {} : () => setState(() => currentStep--),
                               ),
                             ),
                           )
@@ -149,10 +260,9 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
                             icon: Icons.arrow_forward,
                             iconOnRight: true,
                             color: Appstyle.rose,
-                            onPressed: () {
+                            onPressed: _isLoading ? () {} : () {
                               if (currentStep == 0) {
                                 // ✅ Vérifie si la quantité du produit sélectionné est > 0
-
                                 if (totalnombrepalette > 0) {
                                   setState(() => currentStep++);
                                 } else {
@@ -167,11 +277,18 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
                               } else if (currentStep < 3) {
                                 setState(() => currentStep++);
                               } else if (currentStep == 3) {
-                                setState(() => currentStep++);
+                                // Payment step - check balance and save to database
                                 if (widget.solde >= totalCommande) {
-                                  commande_confirme = true;
+                                  _saveCommandeToDatabase();
+                                  setState(() {
+                                    commande_confirme = true;
+                                    currentStep++;
+                                  });
                                 } else {
-                                  commande_confirme = false;
+                                  setState(() {
+                                    commande_confirme = false;
+                                    currentStep++;
+                                  });
                                 }
                               }
                             },
@@ -191,6 +308,12 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
 
   /// Contenu étapes
   Widget _buildStepContent() {
+    if (_isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
     switch (currentStep) {
       case 0:
         return _buildStep1ProduitQuantite();
@@ -580,7 +703,7 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
           ),
         ],
 
-        chaufeur?SizedBox(height: 270):SizedBox(height: 470),
+        chaufeur ? SizedBox(height: 270) : SizedBox(height: 470),
 
         Row(
           children: [
@@ -648,7 +771,7 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
                   Image.asset(
                     "assets/icons/palette_icon.png",
                     width: 70,
-                    height:70,
+                    height: 70,
                     fit: BoxFit.contain,
                   ),
                   const SizedBox(width: 10),
@@ -716,7 +839,7 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
                     setState(() {
                       if (palette) {
                         palette = false;
-                        }
+                      }
                     });
                   },
                   child: Container(
@@ -742,7 +865,7 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
             const SizedBox(height: 180),
 
             // --- Total commande ---
-             ],
+          ],
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -768,10 +891,8 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
     );
   }
 
- /// Étape 4 : Confrimation
+  /// Étape 4 : Confrimation
   Widget _buildStep3Confirmation() {
-    Produit produit = produits[currentIndex];
-
     return Column(
       children: [
         Column(
@@ -886,8 +1007,6 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
                   "${totalCommande.toStringAsFixed(2)} DA",
                   style: Appstyle.textM_B.copyWith(color: Appstyle.blueF),
                 ),
-
-
               ],
             ),
             const SizedBox(height: 20),
@@ -929,25 +1048,23 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
 
   /// Étape 5 : Message
   Widget _buildStep4Confirmation() {
-    Produit produit = produits[currentIndex];
-
     return Column(
       children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-             commande_confirme?"Commande confirmé":"Commande echoué",
+              commande_confirme ? "Commande confirmé" : "Commande echoué",
               style: Appstyle.textS_B.copyWith(color: Appstyle.noir),
             ),
             const SizedBox(height: 120),
             Text(
-              commande_confirme?"Votre commande est bien confirmé !!":"Solde client insufisant !!",
+              commande_confirme ? "Votre commande est bien confirmé !!" : "Solde client insufisant !!",
               style: Appstyle.textS_B.copyWith(color: Appstyle.noir),
             ),
-            const SizedBox(height:40),
+            const SizedBox(height: 40),
             Image.asset(
-              commande_confirme?"assets/icons/nike_icon.png":"assets/icons/croix_icon.png",
+              commande_confirme ? "assets/icons/nike_icon.png" : "assets/icons/croix_icon.png",
               width: 150,
               height: 150,
               fit: BoxFit.contain,
@@ -956,7 +1073,6 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
         ),
       ],
     );
-
   }
 }
 

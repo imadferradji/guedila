@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:qanaty/core/utilis/responsive.dart';
 import 'package:qanaty/core/widget/acount_widget.dart';
@@ -6,23 +7,90 @@ import '../../core/theme/app_style.dart';
 import '../../core/widget/etat_facture_widget.dart';
 import '../../core/widget/facture_widget.dart';
 import '../../core/widget/facture_widget_plus_imprimer.dart';
+import '../../core/widget/print_dialog.dart';
 import '../../core/widget/search_field.dart';
-
+import '../../core/widget/facture_model.dart';
+import '../api_service.dart';
 
 class DocumentPage extends StatefulWidget {
-  final String username="Oussama Bensbaa";
+  final String username = "Oussama Bensbaa";
   DocumentPage({Key? key}) : super(key: key);
+
   @override
   State<DocumentPage> createState() => _DocumentPage();
 }
 
 class _DocumentPage extends State<DocumentPage> {
-
   final TextEditingController _controller = TextEditingController();
   TextEditingController dateFromController = TextEditingController();
   TextEditingController dateToController = TextEditingController();
 
-  bool facSide=false;
+  bool facSide = false;
+  bool isLoading = true;
+  List<Facture> factures = [];
+  List<Facture> filteredFactures = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFactures();
+  }
+
+  Future<void> _loadFactures() async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+
+      final response = await ApiService.getUserFactures("imadferradji@gmail.com"); // Remplacez par l'email de l'utilisateur connecté
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        if (data['success'] == true) {
+          List<dynamic> commandesData = data['commandes'];
+          setState(() {
+            factures = commandesData.map((json) => Facture.fromJson(json)).toList();
+            filteredFactures = List.from(factures);
+            isLoading = false;
+          });
+        }
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+        // Gérer l'erreur
+      }
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      print('❌ Error loading factures: $e');
+    }
+  }
+
+  void _filterFactures(String query) {
+    setState(() {
+      if (query.isEmpty) {
+        filteredFactures = List.from(factures);
+      } else {
+        filteredFactures = factures.where((facture) =>
+        facture.produit.toLowerCase().contains(query.toLowerCase()) ||
+            facture.quantite.toLowerCase().contains(query.toLowerCase()) ||
+            facture.montant.contains(query)
+        ).toList();
+      }
+    });
+  }
+
+  void _imprimerFacture(Facture facture) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return PrintDialog(facture: facture);
+      },
+    );
+  }
+
   Future<void> selectDate(BuildContext context, TextEditingController controller) async {
     DateTime? picked = await showDatePicker(
       context: context,
@@ -35,12 +103,21 @@ class _DocumentPage extends State<DocumentPage> {
       controller.text = "${picked.day}/${picked.month}/${picked.year}";
     }
   }
+
   @override
   void dispose() {
     _controller.dispose();
     dateFromController.dispose();
     dateToController.dispose();
     super.dispose();
+  }
+
+  double get _montantTotal {
+    return filteredFactures.fold(0, (sum, facture) => sum + double.parse(facture.montant));
+  }
+
+  int get _nombrePalettesTotal {
+    return filteredFactures.where((f) => f.pallete == 'Oui').length;
   }
 
   @override
@@ -56,8 +133,8 @@ class _DocumentPage extends State<DocumentPage> {
 
           final adjustedWidth = screenWidth < minWidth ? minWidth : screenWidth;
           final adjustedHeight = screenHeight < minHeight ? minHeight : screenHeight;
-          final paddingV=  adjustedHeight*0.03;
-          final paddingH=  adjustedWidth*0.03;
+          final paddingV = adjustedHeight * 0.03;
+          final paddingH = adjustedWidth * 0.03;
 
           return SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -74,21 +151,19 @@ class _DocumentPage extends State<DocumentPage> {
                     width: adjustedWidth,
                     height: adjustedHeight,
                     child: Row(
-
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // SIde bar
+                        // Side bar
                         Container(
-                            width:Responsive.sidebarWidth(adjustedWidth),
-                            height:Responsive.sidebarHeight(adjustedHeight),
+                            width: Responsive.sidebarWidth(adjustedWidth),
+                            height: Responsive.sidebarHeight(adjustedHeight),
                             child: SideBarWidget()
-                        )
-                        ,
-                        SizedBox(width: paddingH,),
+                        ),
+                        SizedBox(width: paddingH),
                         Expanded(
                           child: Column(
                             children: [
-                              Row (
+                              Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Spacer(),
@@ -99,20 +174,19 @@ class _DocumentPage extends State<DocumentPage> {
                                       height: Responsive.notificationSize(adjustedWidth),
                                       fit: BoxFit.contain,
                                     ),
-                                    onPressed: () {
-                                    },
+                                    onPressed: () {},
                                   ),
                                   AccountWidget(name: "Oussama Bensbaa", imageUrl: "assets/images/support.png"),
-                                  SizedBox(width: 16,),
+                                  SizedBox(width: 16),
                                 ],
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                  Text("Document", style:Appstyle.textXL_B.copyWith(color: Appstyle.noir)),
+                                  Text("Document", style: Appstyle.textXL_B.copyWith(color: Appstyle.noir)),
                                 ],
                               ),
-                              SizedBox(height: 20,),
+                              SizedBox(height: 20),
 
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -121,21 +195,24 @@ class _DocumentPage extends State<DocumentPage> {
                                     initialSelectedIndex: facSide ? 1 : 0,
                                     onChanged: (index) {
                                       setState(() {
-                                        facSide = index == 1; // si "Facture" sélectionné -> facSide = true
+                                        facSide = index == 1;
                                       });
                                     },
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 90,),
+                              SizedBox(height: 90),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text( "Mes facuters", style: Appstyle.textL_B,),
+                                  Text("Mes factures", style: Appstyle.textL_B),
                                   facSide
                                       ? SizedBox(
                                     width: 412,
-                                    child: SearchField(controller: _controller),
+                                    child: SearchField(
+                                      controller: _controller,
+                                      onChanged: _filterFactures,
+                                    ),
                                   )
                                       : Row(
                                     children: [
@@ -153,14 +230,14 @@ class _DocumentPage extends State<DocumentPage> {
                                             enabledBorder: OutlineInputBorder(
                                               borderRadius: BorderRadius.circular(12),
                                               borderSide: BorderSide(
-                                                color: Appstyle.blueC, // couleur de la bordure normale
+                                                color: Appstyle.blueC,
                                                 width: 1.5,
                                               ),
                                             ),
                                             focusedBorder: OutlineInputBorder(
                                               borderRadius: BorderRadius.circular(12),
                                               borderSide: BorderSide(
-                                                color: Appstyle.blueC, // couleur quand le champ est sélectionné
+                                                color: Appstyle.blueC,
                                                 width: 2,
                                               ),
                                             ),
@@ -168,9 +245,7 @@ class _DocumentPage extends State<DocumentPage> {
                                           onTap: () => selectDate(context, dateFromController),
                                         ),
                                       ),
-
                                       SizedBox(width: 20),
-
                                       SizedBox(
                                         width: 180,
                                         child: TextField(
@@ -202,86 +277,61 @@ class _DocumentPage extends State<DocumentPage> {
                                       ),
                                     ],
                                   ),
-
-
                                 ],
                               ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-
-                                ],
-                              )
-                              ,SizedBox(height: 40,),
+                              SizedBox(height: 40),
                               Container(
                                 width: double.infinity,
-                                height: adjustedHeight*0.5,
-                                child: SingleChildScrollView(
-                                  child: !facSide?Column(
-                                    children: [
-                                      FactureWidget(quantite: "14 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé'),
-                                      SizedBox(height: 10,),
-                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé'),
-                                      SizedBox(height: 10,),
-                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé'),
-                                      SizedBox(height: 10,),
-                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé'),
-                                      SizedBox(height: 10,),
-                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé'),
-                                      SizedBox(height: 10,),
-                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé', ),
-                                      SizedBox(height: 10,),
-                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé' ),
-                                      SizedBox(height: 10,),
-                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé' ),
-                                      SizedBox(height: 10,),
-                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé'),
-                                      SizedBox(height: 10,),
-                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé' ),
-                                      SizedBox(height: 10,),
-                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé' ),
-                                      SizedBox(height: 10,),
-                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé' ),
-                                      SizedBox(height: 10,),
-                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé'),
-
-                                    ],
-                                  ):Column(children: [
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
-                                      SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
-                                      SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
-                                      SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
-                                      SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
-                                      SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
-                                      SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
-                                      SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
-                                      SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
-                                      SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
-                                      SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
-                                      SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
-                                      SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
-
-                                    ],),
+                                height: adjustedHeight * 0.5,
+                                child: isLoading
+                                    ? Center(child: CircularProgressIndicator())
+                                    : SingleChildScrollView(
+                                  child: !facSide
+                                      ? Column(
+                                    children: filteredFactures.map((facture) {
+                                      return Column(
+                                        children: [
+                                          FactureWidget(
+                                            quantite: facture.quantite,
+                                            produit: facture.produit,
+                                            livre: facture.dateLivraison,
+                                            pallete: facture.pallete,
+                                            montant: facture.montant,
+                                            date: facture.dateCommande,
+                                            etat: facture.etat,
+                                          ),
+                                          SizedBox(height: 10),
+                                        ],
+                                      );
+                                    }).toList(),
+                                  )
+                                      : Column(
+                                    children: filteredFactures.map((facture) {
+                                      return Column(
+                                        children: [
+                                          FactureImprimerWidget(
+                                            quantite: facture.quantite,
+                                            produit: facture.produit,
+                                            livre: facture.dateLivraison,
+                                            pallete: facture.pallete,
+                                            montant: facture.montant,
+                                            date: facture.dateCommande,
+                                            onPressed: () => _imprimerFacture(facture),
+                                          ),
+                                          SizedBox(height: 10),
+                                        ],
+                                      );
+                                    }).toList(),
+                                  ),
                                 ),
                               ),
-                              SizedBox(height: 30,),
+                              SizedBox(height: 30),
                               facSide
-                                  ? Container() : Row(
+                                  ? Container()
+                                  : Row(
                                 children: [
                                   SizedBox(
-                                    height:40,
+                                    height: 40,
                                     child: Container(
                                       decoration: BoxDecoration(
                                         color: Appstyle.blueC,
@@ -297,17 +347,19 @@ class _DocumentPage extends State<DocumentPage> {
                                       ),
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
-                                        child: Center(child: Text("Montant total: 1968000.00 Da",style: Appstyle.textM_B.copyWith(color: Appstyle.blanc),)),
-                                      ),),
+                                        child: Center(
+                                          child: Text(
+                                            "Montant total: ${_montantTotal.toStringAsFixed(2)} Da",
+                                            style: Appstyle.textM_B.copyWith(color: Appstyle.blanc),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                   ),
-
-
-
-                                  SizedBox(width: 50,),
+                                  SizedBox(width: 50),
                                   SizedBox(
-                                    height:40,
+                                    height: 40,
                                     child: Container(
-
                                       decoration: BoxDecoration(
                                         color: Appstyle.blueC,
                                         borderRadius: BorderRadius.circular(16),
@@ -319,23 +371,25 @@ class _DocumentPage extends State<DocumentPage> {
                                             offset: const Offset(0, 1),
                                           ),
                                         ],
-                                      ),  child: Padding(
+                                      ),
+                                      child: Padding(
                                         padding: const EdgeInsets.all(8.0),
-                                        child: Center(child: Text("Nomber Pallet de total: 1980",style: Appstyle.textM_B.copyWith(color: Appstyle.blanc),)),
-                                      ),),
+                                        child: Center(
+                                          child: Text(
+                                            "Nombre Palettes total: $_nombrePalettesTotal",
+                                            style: Appstyle.textM_B.copyWith(color: Appstyle.blanc),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                  SizedBox(width: 50,),
+                                  SizedBox(width: 50),
                                 ],
                               ),
-
-
                             ],
-
-
                           ),
                         )
                       ],
-
                     ),
                   ),
                 ),

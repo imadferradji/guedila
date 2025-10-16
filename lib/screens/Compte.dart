@@ -1,9 +1,64 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'api_service.dart';
 
-import 'SuccessScreen.dart';
+class Compte extends StatefulWidget {
+  final String email;
 
-class Compte extends StatelessWidget {
-  const Compte({super.key});
+  const Compte({super.key, required this.email});
+
+  @override
+  _CompteState createState() => _CompteState();
+}
+
+class _CompteState extends State<Compte> {
+  String _selectedCategory = "T' aval programmera";
+  bool _isLoading = false;
+
+  // This would typically come from previous steps or be generated
+  final String _accountNumber = "N° ${DateTime.now().millisecondsSinceEpoch.toString().substring(8)}";
+
+  Future<void> _completeRegistration() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final response = await ApiService.registerStep3(
+        email: widget.email,
+        accountNumber: _accountNumber,
+        category: _selectedCategory,
+      );
+
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (response.statusCode == 201) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Inscription terminée avec succès!')),
+        );
+
+        if (!mounted) return;
+        // ✅ Use go_router instead of Navigator
+        context.go('/success');
+      } else {
+        final errorData = json.decode(response.body);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorData['message'] ?? 'Erreur est survenue')),
+        );
+      }
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erreur: $e')),
+      );
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +95,6 @@ class Compte extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 40),
-                      // Stepper mockup - Updated active step
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: const [
@@ -118,9 +172,9 @@ class Compte extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(8),
                                   color: Colors.grey[50],
                                 ),
-                                child: const Text(
-                                  "N° 0.000202",
-                                  style: TextStyle(
+                                child: Text(
+                                  _accountNumber,
+                                  style: const TextStyle(
                                     fontSize: 16,
                                     fontFamily: "Oswald",
                                     fontWeight: FontWeight.bold,
@@ -149,16 +203,22 @@ class Compte extends StatelessWidget {
                                 ),
                                 child: DropdownButtonHideUnderline(
                                   child: DropdownButton<String>(
-                                    value: "T' aval programmera",
+                                    value: _selectedCategory,
                                     isExpanded: true,
                                     padding: const EdgeInsets.symmetric(horizontal: 12),
                                     items: const [
                                       DropdownMenuItem(value: "T' aval programmera", child: Text("T' aval programmera")),
-                                      DropdownMenuItem(value: "Option 2", child: Text("Option 2")),
-                                      DropdownMenuItem(value: "Option 3", child: Text("Option 3")),
+                                      DropdownMenuItem(value: "Développeur", child: Text("Développeur")),
+                                      DropdownMenuItem(value: "Designer", child: Text("Designer")),
+                                      DropdownMenuItem(value: "Manager", child: Text("Manager")),
+                                      DropdownMenuItem(value: "Consultant", child: Text("Consultant")),
+                                      DropdownMenuItem(value: "Entrepreneur", child: Text("Entrepreneur")),
+                                      DropdownMenuItem(value: "Freelancer", child: Text("Freelancer")),
                                     ],
                                     onChanged: (value) {
-                                      // TODO: handle selection
+                                      setState(() {
+                                        _selectedCategory = value!;
+                                      });
                                     },
                                   ),
                                 ),
@@ -171,13 +231,12 @@ class Compte extends StatelessWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              // Précédent button
                               SizedBox(
                                 width: 140,
                                 height: 42,
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    // TODO: Navigate to previous step
+                                    Navigator.pop(context);
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.white,
@@ -189,7 +248,7 @@ class Compte extends StatelessWidget {
                                         width: 2.0,
                                       ),
                                     ),
-                                    elevation: 0, // Remove shadow
+                                    elevation: 0,
                                   ),
                                   child: const Text(
                                     "Précédent",
@@ -197,7 +256,7 @@ class Compte extends StatelessWidget {
                                       fontSize: 16,
                                       fontFamily: "Oswald",
                                       fontWeight: FontWeight.bold,
-                                      color: Color(0xFF3F8CFF), // Blue text
+                                      color: Color(0xFF3F8CFF),
                                     ),
                                   ),
                                 ),
@@ -205,13 +264,10 @@ class Compte extends StatelessWidget {
                               SizedBox(
                                 width: 140,
                                 height: 42,
-                                child: ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => const SuccessScreen()),
-                                      );
-                                    },
+                                child: _isLoading
+                                    ? const Center(child: CircularProgressIndicator())
+                                    : ElevatedButton(
+                                  onPressed: _completeRegistration,
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFFF482D2),
                                     shape: RoundedRectangleBorder(
@@ -220,7 +276,7 @@ class Compte extends StatelessWidget {
                                     elevation: 0,
                                   ),
                                   child: const Text(
-                                    "Suivant →",
+                                    "Terminer",
                                     style: TextStyle(
                                       fontSize: 16,
                                       fontFamily: "Oswald",

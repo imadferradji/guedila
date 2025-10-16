@@ -1,32 +1,24 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:qanaty/core/theme/app_style.dart';
 
-// Controllers pour les informations du camion
-final TextEditingController matriculeController = TextEditingController();
-final TextEditingController tonnageController = TextEditingController();
-final TextEditingController marqueController = TextEditingController();
-final TextEditingController modeleController = TextEditingController();
-final TextEditingController anneeController = TextEditingController();
-final TextEditingController couleurController = TextEditingController();
-final TextEditingController dateMiseCirculationController = TextEditingController();
-
-// pour stocker l'image du camion
-String? camionImagePath;
+import '../../screens/api_service.dart';
 
 /// Fonction pour afficher le Dialog d'ajout de camion
-void showNewCamionDialog(BuildContext context) {
+void showNewCamionDialog(BuildContext context, {VoidCallback? onCamionAdded}) {
   showDialog(
     context: context,
-    builder: (context) => CamionDialog(),
+    builder: (context) => CamionDialog(onCamionAdded: onCamionAdded),
   );
 }
 
 /// Dialog multi-étapes pour l'ajout d'un camion
 class CamionDialog extends StatefulWidget {
+  final VoidCallback? onCamionAdded;
 
-
-
+  const CamionDialog({super.key, this.onCamionAdded});
 
   @override
   _CamionDialogState createState() => _CamionDialogState();
@@ -36,6 +28,15 @@ class _CamionDialogState extends State<CamionDialog> {
   int currentStep = 0;
   String? selectedTypeCamion;
   String? selectedStatut;
+
+  // Controllers pour les informations du camion
+  final TextEditingController matriculeController = TextEditingController();
+  final TextEditingController tonnageController = TextEditingController();
+  final TextEditingController marqueController = TextEditingController();
+  final TextEditingController modeleController = TextEditingController();
+  final TextEditingController anneeController = TextEditingController();
+  final TextEditingController couleurController = TextEditingController();
+  final TextEditingController dateMiseCirculationController = TextEditingController();
 
   // Liste des types de camion
   final List<String> typesCamion = [
@@ -59,6 +60,9 @@ class _CamionDialogState extends State<CamionDialog> {
   final FocusNode modeleFocus = FocusNode();
   final FocusNode anneeFocus = FocusNode();
 
+  // pour stocker l'image du camion
+  String? camionImagePath;
+
   @override
   void initState() {
     super.initState();
@@ -71,10 +75,19 @@ class _CamionDialogState extends State<CamionDialog> {
 
   @override
   void dispose() {
+    matriculeController.dispose();
+    tonnageController.dispose();
+    marqueController.dispose();
+    modeleController.dispose();
+    anneeController.dispose();
+    couleurController.dispose();
+    dateMiseCirculationController.dispose();
+
     matriculeFocus.dispose();
     tonnageFocus.dispose();
     remorqueFocus.dispose();
     modeleFocus.dispose();
+    anneeFocus.dispose();
     super.dispose();
   }
 
@@ -107,8 +120,6 @@ class _CamionDialogState extends State<CamionDialog> {
                       child: ElevatedButton(
                         onPressed: () {
                           _saveCamionInfo();
-
-                          Navigator.pop(context);
                         },
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -168,24 +179,41 @@ class _CamionDialogState extends State<CamionDialog> {
   }
 
   /// Save camion information
-  void _saveCamionInfo() {
-    // Here you would typically save to database or state management
-    print('Camion Information Saved:');
-    print('Matricule: ${matriculeController.text}');
-    print('Tonnage: ${tonnageController.text} tonnes');
-    print('Type: $selectedTypeCamion');
-    print('Matricule de remorque: ${marqueController.text}');
-    print('Modèle: ${modeleController.text}');
-    print('Année: ${anneeController.text}');
-    print('Couleur: ${couleurController.text}');
-    print('Date mise en circulation: ${dateMiseCirculationController.text}');
-    print('Statut: $selectedStatut');
-    print('Image Path: $camionImagePath');
+  void _saveCamionInfo() async {
+    try {
+      final response = await ApiService.createCamion(
+        matricule: matriculeController.text,
+        matriculeRemorque: marqueController.text,
+        type: selectedTypeCamion ?? '',
+        tonnage: double.tryParse(tonnageController.text) ?? 0.0,
+        marque: modeleController.text,
+        modele: modeleController.text,
+        annee: int.tryParse(anneeController.text),
+        couleur: couleurController.text,
+        dateMiseCirculation: dateMiseCirculationController.text,
+        statut: selectedStatut,
+        createdBy: "current_user_email", // Replace with actual user email
+      );
 
-    // Show success message
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Camion ajouté avec succès!')),
-    );
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Camion ajouté avec succès!')),
+        );
+
+        // Call the callback to refresh the parent widget
+        widget.onCamionAdded?.call();
+
+        Navigator.pop(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erreur: ${json.decode(response.body)['message']}')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erreur: $e')),
+      );
+    }
   }
 
   /// Contenu selon l'étape
@@ -244,6 +272,7 @@ class _CamionDialogState extends State<CamionDialog> {
       ),
     );
   }
+
   //Widget pour le tonnage
   Widget _buildNumberField({
     required String label,
@@ -501,6 +530,7 @@ class _CamionDialogState extends State<CamionDialog> {
       ),
     );
   }
+
   Widget _buildStep3Success() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -515,6 +545,7 @@ class _CamionDialogState extends State<CamionDialog> {
       ],
     );
   }
+
   /// Function to select camion image
   void _selectCamionImage() {
     // For demo purposes, we'll just toggle between no image and a placeholder

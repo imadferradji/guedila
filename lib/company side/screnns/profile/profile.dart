@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:qanaty/core/utilis/responsive.dart';
 import 'package:qanaty/core/widget/acount_widget.dart';
-import 'package:qanaty/core/widget/side_bar_widget.dart';
 import '../../../core/theme/app_style.dart';
+import '../../Widgets/side_bar.dart';
 
 
 class ProfilePageC extends StatefulWidget {
@@ -176,7 +176,7 @@ class _ProfilePageC extends State<ProfilePageC> {
                         Container(
                             width:Responsive.sidebarWidth(adjustedWidth),
                             height:Responsive.sidebarHeight(adjustedHeight),
-                            child: SideBarWidget()
+                            child: SideBarWidgetC()
                         ),
                         SizedBox(width: paddingH,),
                         Expanded(

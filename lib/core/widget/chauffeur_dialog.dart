@@ -1,18 +1,25 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import '../../screens/api_service.dart';
 import '../theme/app_style.dart';
 
 /// Fonction pour afficher le Dialog d'ajout de chauffeur
-void showNewDriverDialog(BuildContext context) {
+void showNewDriverDialog(BuildContext context, {VoidCallback? onChauffeurAdded}) {
   showDialog(
     context: context,
     barrierDismissible: true,
     barrierColor: Appstyle.blueF.withOpacity(0.3),
-    builder: (context) => DriverDialog(),
+    builder: (context) => DriverDialog(onChauffeurAdded: onChauffeurAdded),
   );
 }
 
 /// Dialog multi-étapes pour l'ajout d'un chauffeur
 class DriverDialog extends StatefulWidget {
+  final VoidCallback? onChauffeurAdded;
+
+  const DriverDialog({super.key, this.onChauffeurAdded});
+
   @override
   _DriverDialogState createState() => _DriverDialogState();
 }
@@ -87,7 +94,6 @@ class _DriverDialogState extends State<DriverDialog> {
                       child: ElevatedButton.icon(
                         onPressed: () {
                           _saveDriverInfo();
-                          Navigator.pop(context);
                         },
                         icon: const Icon(Icons.check),
                         label: const Text("Terminer"),
@@ -149,11 +155,37 @@ class _DriverDialogState extends State<DriverDialog> {
   }
 
   /// Sauvegarde infos chauffeur
-  void _saveDriverInfo() {
-    debugPrint("Driver Saved: ${fullNameController.text}");
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Chauffeur ajouté avec succès!')),
-    );
+  void _saveDriverInfo() async {
+    try {
+      final response = await ApiService.createChauffeur(
+        nomComplet: fullNameController.text,
+        numeroPermis: licenseNumberController.text,
+        dateNaissance: birthDateController.text,
+        telephone: phoneNumberController.text,
+        photoPath: driverImagePath,
+        createdBy: "current_user_email", // Replace with actual user email
+      );
+
+      if (response.statusCode == 200) {
+        debugPrint("Driver Saved: ${fullNameController.text}");
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Chauffeur ajouté avec succès!')),
+        );
+
+        // Call the callback to refresh the parent widget
+        widget.onChauffeurAdded?.call();
+
+        Navigator.pop(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erreur: ${json.decode(response.body)['message']}')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erreur: $e')),
+      );
+    }
   }
 
   /// Step 1 : Formulaire infos chauffeur

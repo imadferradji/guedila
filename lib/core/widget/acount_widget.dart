@@ -24,7 +24,7 @@ class AccountWidget extends StatelessWidget {
       elevation: 4, // petite ombre
       onSelected: (value) {
         if (value == "Logout") {
-          context.go("/login");
+          context.go("/");
         } else if (value == "Compte") {
           context.go("/profile?tab=0");
         } else if (value == "Notification") {

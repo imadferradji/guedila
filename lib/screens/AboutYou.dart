@@ -1,9 +1,82 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'Compte.dart';
 import 'PhoneValidation.dart';
+import 'api_service.dart';
 
-class AboutYou extends StatelessWidget {
-  const AboutYou({super.key});
+class AboutYou extends StatefulWidget {
+  final String email;
+
+  const AboutYou({super.key, required this.email});
+
+  @override
+  _AboutYouState createState() => _AboutYouState();
+}
+
+class _AboutYouState extends State<AboutYou> {
+  final TextEditingController _fullNameController = TextEditingController();
+  final TextEditingController _birthDateController = TextEditingController();
+  final TextEditingController _companyController = TextEditingController();
+
+  String _selectedWilaya = "Biskra";
+  bool _isLoading = false;
+
+  Future<void> _proceedToStep3() async {
+    if (_fullNameController.text.isEmpty ||
+        _birthDateController.text.isEmpty ||
+        _companyController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Veuillez remplir tous les champs')),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final response = await ApiService.registerStep2(
+        email: widget.email,
+        fullName: _fullNameController.text.trim(),
+        birthDate: _birthDateController.text.trim(),
+        company: _companyController.text.trim(),
+        wilaya: _selectedWilaya,
+      );
+
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (response.statusCode == 200) {
+        // Step 2 successful
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Informations personnelles enregistrées!')),
+        );
+
+        // Navigate to step 3 with email
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Compte(email: widget.email),
+          ),
+        );
+      } else {
+        final errorData = json.decode(response.body);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorData['message'] ?? 'Erreur est survenue')),
+        );
+      }
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erreur: $e')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +113,6 @@ class AboutYou extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 40),
-                      // Stepper mockup - Updated active step
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: const [
@@ -67,7 +139,6 @@ class AboutYou extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.only(right: 20,left:20,bottom: 20),
                     child: Column(
-
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
@@ -112,24 +183,27 @@ class AboutYou extends StatelessWidget {
                               ),
                               const SizedBox(height: 10),
                               TextField(
+                                controller: _fullNameController,
                                 decoration: InputDecoration(
                                   hintText: "Voter Nom et prenom",
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide(
-                                      color: Colors.grey, // Color when not focused
+                                    borderSide: const BorderSide(
+                                      color: Colors.grey,
                                       width: 1.0,
                                     ),
                                   ),
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide(
-                                      color: Colors.blue, // Color when focused
+                                    borderSide: const BorderSide(
+                                      color: Colors.blue,
                                       width: 2.0,
                                     ),
                                   ),
-                                ),),
+                                ),
+                              ),
                               const SizedBox(height: 20),
+
                               const Text(
                                 "Date de naissance",
                                 style: TextStyle(
@@ -141,23 +215,25 @@ class AboutYou extends StatelessWidget {
                               ),
                               const SizedBox(height: 10),
                               TextField(
+                                controller: _birthDateController,
                                 decoration: InputDecoration(
-                                  hintText: "Voter Date de naissance",
+                                  hintText: "JJ/MM/AAAA",
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide(
-                                      color: Colors.grey, // Color when not focused
+                                    borderSide: const BorderSide(
+                                      color: Colors.grey,
                                       width: 1.0,
                                     ),
                                   ),
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide(
-                                      color: Colors.blue, // Color when focused
+                                    borderSide: const BorderSide(
+                                      color: Colors.blue,
                                       width: 2.0,
                                     ),
                                   ),
-                                ),),
+                                ),
+                              ),
                               const SizedBox(height: 20),
 
                               // Nom de société
@@ -172,23 +248,25 @@ class AboutYou extends StatelessWidget {
                               ),
                               const SizedBox(height: 10),
                               TextField(
+                                controller: _companyController,
                                 decoration: InputDecoration(
                                   hintText: "Le Nom de société",
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide(
-                                      color: Colors.grey, // Color when not focused
+                                    borderSide: const BorderSide(
+                                      color: Colors.grey,
                                       width: 1.0,
                                     ),
                                   ),
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8),
-                                    borderSide: BorderSide(
-                                      color: Colors.blue, // Color when focused
+                                    borderSide: const BorderSide(
+                                      color: Colors.blue,
                                       width: 2.0,
                                     ),
                                   ),
-                                ),),
+                                ),
+                              ),
 
                               const SizedBox(height: 20),
 
@@ -210,16 +288,22 @@ class AboutYou extends StatelessWidget {
                                 ),
                                 child: DropdownButtonHideUnderline(
                                   child: DropdownButton<String>(
-                                    value: "Biskra",
+                                    value: _selectedWilaya,
                                     isExpanded: true,
                                     padding: const EdgeInsets.symmetric(horizontal: 12),
                                     items: const [
                                       DropdownMenuItem(value: "Biskra", child: Text("Biskra")),
                                       DropdownMenuItem(value: "Batna", child: Text("Batna")),
-                                      DropdownMenuItem(value: "Misla", child: Text("Msila")),
+                                      DropdownMenuItem(value: "Msila", child: Text("Msila")),
+                                      DropdownMenuItem(value: "Alger", child: Text("Alger")),
+                                      DropdownMenuItem(value: "Oran", child: Text("Oran")),
+                                      DropdownMenuItem(value: "Constantine", child: Text("Constantine")),
+                                      DropdownMenuItem(value: "Annaba", child: Text("Annaba")),
                                     ],
                                     onChanged: (value) {
-                                      // TODO: handle selection
+                                      setState(() {
+                                        _selectedWilaya = value!;
+                                      });
                                     },
                                   ),
                                 ),
@@ -233,26 +317,26 @@ class AboutYou extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               SizedBox(
-                                  width: 140,
-                                  height: 42,
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => const PhoneValidation()), // 👈 target page
-                                      );
-                                    },
+                                width: 140,
+                                height: 42,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => const PhoneValidation()),
+                                    );
+                                  },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.white, // White background
-                                    foregroundColor: const Color(0xFF3F8CFF), // Blue text color
+                                    backgroundColor: Colors.white,
+                                    foregroundColor: const Color(0xFF3F8CFF),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(14),
                                       side: const BorderSide(
-                                        color: Color(0xFF3F8CFF), // Blue border
+                                        color: Color(0xFF3F8CFF),
                                         width: 2.0,
                                       ),
                                     ),
-                                    elevation: 0, // Remove shadow
+                                    elevation: 0,
                                   ),
                                   child: const Text(
                                     "Précédent",
@@ -260,38 +344,35 @@ class AboutYou extends StatelessWidget {
                                       fontSize: 16,
                                       fontFamily: "Oswald",
                                       fontWeight: FontWeight.bold,
-                                      color: Color(0xFF3F8CFF), // Blue text
+                                      color: Color(0xFF3F8CFF),
                                     ),
                                   ),
                                 ),
                               ),
                               SizedBox(
-                                  width: 140,
-                                  height: 42,
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => const Compte()), // 👈 target page
-                                      );
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: const Color(0xFFF482D2), // Pink background
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(14),
-                                      ),
-                                      elevation: 0, // Remove shadow
+                                width: 140,
+                                height: 42,
+                                child: _isLoading
+                                    ? const Center(child: CircularProgressIndicator())
+                                    : ElevatedButton(
+                                  onPressed: _proceedToStep3,
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFFF482D2),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(14),
                                     ),
-                                    child: const Text(
-                                      "Suivant →",
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontFamily: "Oswald",
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white, // White text
-                                      ),
+                                    elevation: 0,
+                                  ),
+                                  child: const Text(
+                                    "Suivant →",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontFamily: "Oswald",
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
                                     ),
                                   ),
+                                ),
                               ),
                             ],
                           ),

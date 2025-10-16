@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class SuccessScreen extends StatelessWidget {
   const SuccessScreen({super.key});
@@ -11,7 +12,6 @@ class SuccessScreen extends StatelessWidget {
         padding: const EdgeInsets.all(20.0),
         child: Row(
           children: [
-            // ---- Left Blue Side ----
             Expanded(
               flex: 1,
               child: Container(
@@ -39,7 +39,6 @@ class SuccessScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 40),
-                      // Stepper mockup - All steps completed
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: const [
@@ -56,7 +55,6 @@ class SuccessScreen extends StatelessWidget {
 
             const SizedBox(width: 20),
 
-            // ---- Right White Success Side ----
             Expanded(
               flex: 3,
               child: Container(
@@ -70,12 +68,11 @@ class SuccessScreen extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // Success illustration
-                        Image.asset(
-                          "success.png",
-                          width: 300,
-                          height: 300,
-                          fit: BoxFit.contain,
+                        // Success illustration (you can replace with your own image)
+                        Icon(
+                          Icons.check_circle,
+                          size: 150,
+                          color: Colors.green,
                         ),
                         const SizedBox(height: 40),
 
@@ -90,6 +87,17 @@ class SuccessScreen extends StatelessWidget {
                           ),
                           textAlign: TextAlign.center,
                         ),
+                        const SizedBox(height: 20),
+
+                        const Text(
+                          "Bienvenue dans la communauté QANATY",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontFamily: "Oswald",
+                            color: Colors.grey,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
                         const SizedBox(height: 40),
 
                         // Commencer button with arrow
@@ -98,10 +106,10 @@ class SuccessScreen extends StatelessWidget {
                           height: 50,
                           child: ElevatedButton(
                             onPressed: () {
-                              // TODO: Handle commencer action
+                              context.go("/");
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFFF482D2), // Pink background
+                              backgroundColor: const Color(0xFFF482D2),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(14),
                               ),
@@ -111,7 +119,7 @@ class SuccessScreen extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  "Commencer",
+                                  "Se connecter",
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontFamily: "Oswald",

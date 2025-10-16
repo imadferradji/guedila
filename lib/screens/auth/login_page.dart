@@ -58,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
                       },
                     ),
                     const SizedBox(height: 16),
-                    SoldeWidget(solde: "750000.00", dernier_modif: "12/05/2025"),
+                    SoldeWidget(dernier_modif: "12/05/2025"),
                     const SizedBox(height: 16),
                     VirementWidget(
                       numero: '2534620',

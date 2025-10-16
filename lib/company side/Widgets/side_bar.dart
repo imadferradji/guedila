@@ -73,7 +73,7 @@ class SideBarWidgetC extends StatelessWidget {
             buildMenuItem(
                 iconPath: "assets/icons/dashboard_icon.png",
                 text: "Dashboard",
-                route: "/"),
+                route: "/dashbordCompany"),
             buildMenuItem(
                 iconPath: "assets/icons/commande_icon.png",
                 text: "Commande",
@@ -85,7 +85,7 @@ class SideBarWidgetC extends StatelessWidget {
             buildMenuItem(
                 iconPath: "assets/icons/document_icon.png",
                 text: "Document",
-                route: "/documentCompany"),
+                route: "/"),
             buildMenuItem(
                 iconPath: "assets/icons/compte_icon.png",
                 text: "Compte",

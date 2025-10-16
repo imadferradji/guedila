@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 class SearchField extends StatelessWidget {
   final TextEditingController controller;
   final Function(String)? onChanged;
-
   const SearchField({
     super.key,
     required this.controller,

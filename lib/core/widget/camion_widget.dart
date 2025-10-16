@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:qanaty/core/theme/app_style.dart';
 
+import '../../screens/api_service.dart';
+
 class CamionWidget extends StatefulWidget {
+  final int id; // Added id field
   final String Matricule;
   final String MatriculeR;
   final String type;
@@ -10,6 +13,7 @@ class CamionWidget extends StatefulWidget {
 
   const CamionWidget({
     super.key,
+    this.id =0, // Added to constructor
     required this.Matricule,
     required this.MatriculeR,
     required this.type,
@@ -68,9 +72,30 @@ class _CamionWidgetState extends State<CamionWidget> {
     );
 
     if (confirm == true) {
-      setState(() {
-        _etat = (_etat == "Actif") ? "Non Actif" : "Actif";
-      });
+      try {
+        final newEtat = (_etat == "Actif") ? "Non Actif" : "Actif";
+        final response = await ApiService.updateCamionEtat(
+          camionId: widget.id, // Now this will work
+          etat: newEtat,
+        );
+
+        if (response.statusCode == 200) {
+          setState(() {
+            _etat = newEtat;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('État mis à jour: $newEtat')),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Erreur lors de la mise à jour')),
+          );
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erreur: $e')),
+        );
+      }
     }
   }
 
