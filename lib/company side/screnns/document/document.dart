@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qanaty/company%20side/Widgets/client_list.dart';
 import 'package:qanaty/core/utilis/responsive.dart';
 import 'package:qanaty/core/widget/acount_widget.dart';
 import '../../../core/theme/app_style.dart';
@@ -115,23 +116,24 @@ class _DocumentPageC extends State<DocumentPageC> {
                               SizedBox(height: 20,),
 
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   EtatWidget(
                                     initialSelectedIndex: facSide ? 1 : 0,
                                     onChanged: (index) {
                                       setState(() {
-                                        facSide = index == 1; // si "Facture" sélectionné -> facSide = true
+                                        facSide = index == 1;
                                       });
                                     },
                                   ),
+                                  CustomDropdown(),
                                 ],
                               ),
                               SizedBox(height: 90,),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text( "Mes facuters", style: Appstyle.textL_B,),
+                                  Text( "Facture", style: Appstyle.textXL_B,),
                                   facSide
                                       ? SizedBox(
                                     width: 412,
