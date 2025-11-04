@@ -62,7 +62,7 @@ class SideBarWidget extends StatelessWidget {
             // Logo
             Center(
               child: Image.asset(
-                "assets/icons/qanaty_icon.png",
+                "assets/icons/guedila_icon.png",
                 width: 100,
                 height: 100,
               ),
@@ -73,7 +73,7 @@ class SideBarWidget extends StatelessWidget {
             buildMenuItem(
                 iconPath: "assets/icons/dashboard_icon.png",
                 text: "Dashboard",
-                route: "/"),
+                route: "/dash"),
             buildMenuItem(
                 iconPath: "assets/icons/commande_icon.png",
                 text: "Commande",

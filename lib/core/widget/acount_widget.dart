@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qanaty/core/theme/app_style.dart';
 
-import '../../screens/profile/profile_page.dart';
 
 class AccountWidget extends StatelessWidget {
   final String name;

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qanaty/core/utilis/responsive.dart';
 import 'package:qanaty/core/widget/acount_widget.dart';
 import 'package:qanaty/core/widget/side_bar_widget.dart';
-import '../../core/theme/app_style.dart';
+import '../../../core/theme/app_style.dart';
 
 
 class ProfilePage extends StatefulWidget {

@@ -1,13 +1,22 @@
-
 import 'package:go_router/go_router.dart';
-import 'package:qanaty/screens/auth/login_page.dart';
-import 'package:qanaty/screens/auth/sign_up.dart';
-import 'package:qanaty/screens/commande/commande_page.dart';
-import 'package:qanaty/screens/dashboard/dashboard_page.dart';
-import 'package:qanaty/screens/document/document_page.dart';
-import 'package:qanaty/screens/driver_truck/driver_truck.dart';
-import 'package:qanaty/screens/profile/profile_page.dart';
-import 'package:qanaty/screens/virement/virement_page.dart';
+import 'package:qanaty/all_screens/guedila_screens/commande.dart';
+import 'package:qanaty/all_screens/guedila_screens/produit.dart';
+import 'all_screens/client_screens/auth/sign_up.dart';
+import 'all_screens/client_screens/commande/commande_page.dart';
+import 'all_screens/client_screens/dashboard/dashboard_page.dart';
+import 'all_screens/client_screens/document/document_page.dart';
+import 'all_screens/client_screens/driver_truck/driver_truck.dart';
+import 'all_screens/client_screens/profile/profile_page.dart';
+import 'all_screens/client_screens/virement/virement_page.dart';
+import 'all_screens/guedila_screens/comptes.dart';
+import 'all_screens/guedila_screens/dashboard.dart';
+import 'all_screens/guedila_screens/document.dart';
+import 'all_screens/guedila_screens/driver_truck.dart';
+import 'all_screens/guedila_screens/planning.dart';
+import 'all_screens/guedila_screens/profile.dart';
+import 'all_screens/guedila_screens/programmation.dart';
+import 'all_screens/guedila_screens/tarif.dart';
+import 'all_screens/guedila_screens/virment.dart';
 
 // Import des pages
 
@@ -16,15 +25,60 @@ class AppRouter {
     initialLocation: '/', // Écran par défaut au démarrage
     routes: [
       GoRoute(
-        path: '/login',
-        builder: (context, state) => const LoginPage(),
+        path: '/planningCompany',
+        builder: (context, state) =>  PlanningCompany(),
       ),
       GoRoute(
-        path: '/signup',
-        builder: (context, state) => const SignUpPage(),
+        path: '/tarifCompany',
+        builder: (context, state) =>  TarificationPageC(),
+      ),
+      GoRoute(
+        path: '/programmationCompany',
+        builder: (context, state) =>  ProgrammationPageC(),
+      ),
+      GoRoute(
+        path: '/drivertruckCompany',
+        builder: (context, state) =>  DriverTruckPageC(),
+      ),
+      GoRoute(
+        path: '/produitCompany',
+        builder: (context, state) =>  ProduitsC(),
+      )
+      ,
+      GoRoute(
+        path: '/commandeCompany',
+        builder: (context, state) =>  CommandePageC(),
+      ),
+      GoRoute(
+        path: '/comptesCompany',
+        builder: (context, state) =>  Comptes(),
       ),
       GoRoute(
         path: '/',
+        builder: (context, state) =>  Dashboardcomany(),
+      ),
+      GoRoute(
+        path: '/documentCompany',
+        builder: (context, state) =>  DocumentPageC(),
+      ),
+      GoRoute(
+        path: '/profileCompany',
+        builder: (context, state) {
+          final tab = int.tryParse(state.uri.queryParameters['tab'] ?? "0") ?? 0;
+          return ProfilePageC(initialIndex: tab);
+        },
+      ),
+
+      GoRoute(
+        path: '/virmentCompany',
+        builder: (context, state) =>  VirmentPageC(),
+      ),
+      GoRoute(
+        path: '/signup',
+        builder: (context, state) =>  SignUpPage(),
+      ),
+      GoRoute(
+        path: '/dash',
         builder: (context, state) =>  DashboardPage(),
       ),
       GoRoute(

@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:qanaty/core/utilis/responsive.dart';
 import 'package:qanaty/core/widget/acount_widget.dart';
 import 'package:qanaty/core/widget/side_bar_widget.dart';
-import '../../core/theme/app_style.dart';
-import '../../core/widget/etat_facture_widget.dart';
-import '../../core/widget/facture_widget.dart';
-import '../../core/widget/facture_widget_plus_imprimer.dart';
-import '../../core/widget/search_field.dart';
+
+import '../../../core/theme/app_style.dart';
+import '../../../core/widget/etat_facture_widget.dart';
+import '../../../core/widget/commande_widget.dart';
+import '../../../core/widget/commande_widget_plus_imprimer.dart';
+import '../../../core/widget/search_field.dart';
 
 
 class DocumentPage extends StatefulWidget {
@@ -219,61 +220,52 @@ class _DocumentPage extends State<DocumentPage> {
                                 child: SingleChildScrollView(
                                   child: !facSide?Column(
                                     children: [
-                                      FactureWidget(quantite: "14 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé'),
+                                      FactureWidget(quantite: "14 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé', nClient: 'Halim', nCommande: '140925C00001', slot: '10-15',),
                                       SizedBox(height: 10,),
-                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé'),
+                                     FactureWidget(quantite: "14 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé', nClient: 'Halim', nCommande: '140925C00001', slot: '10-15',),
                                       SizedBox(height: 10,),
-                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé'),
+                                     FactureWidget(quantite: "14 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé', nClient: 'Halim', nCommande: '140925C00001', slot: '10-15',),
                                       SizedBox(height: 10,),
-                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé'),
+                                     FactureWidget(quantite: "14 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé', nClient: 'Halim', nCommande: '140925C00001', slot: '10-15',),
                                       SizedBox(height: 10,),
-                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé'),
+                                     FactureWidget(quantite: "14 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé', nClient: 'Halim', nCommande: '140925C00001', slot: '10-15',),
                                       SizedBox(height: 10,),
-                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé', ),
+                                     FactureWidget(quantite: "14 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé', nClient: 'Halim', nCommande: '140925C00001', slot: '10-15',),
                                       SizedBox(height: 10,),
-                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé' ),
+                                     FactureWidget(quantite: "14 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé', nClient: 'Halim', nCommande: '140925C00001', slot: '10-15',),
                                       SizedBox(height: 10,),
-                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé' ),
+                                     FactureWidget(quantite: "14 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé', nClient: 'Halim', nCommande: '140925C00001', slot: '10-15',),
                                       SizedBox(height: 10,),
-                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé'),
+                                     FactureWidget(quantite: "14 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé', nClient: 'Halim', nCommande: '140925C00001', slot: '10-15',),
                                       SizedBox(height: 10,),
-                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé' ),
+                                     FactureWidget(quantite: "14 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé', nClient: 'Halim', nCommande: '140925C00001', slot: '10-15',),
                                       SizedBox(height: 10,),
-                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé' ),
+                                     FactureWidget(quantite: "14 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé', nClient: 'Halim', nCommande: '140925C00001', slot: '10-15',),
                                       SizedBox(height: 10,),
-                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé' ),
+                                     FactureWidget(quantite: "14 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé', nClient: 'Halim', nCommande: '140925C00001', slot: '10-15',),
                                       SizedBox(height: 10,),
-                                      FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: 'Validé'),
 
                                     ],
                                   ):Column(children: [
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
+                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){}, etat: 'Livrée', nCommande: '140925C00001', nClient: 'Halim', slot: '00-03',),
                                       SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
+                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){}, etat: 'Livrée', nCommande: '140925C00001', nClient: 'Halim', slot: '00-03',),
                                       SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
+                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){}, etat: 'Livrée', nCommande: '140925C00001', nClient: 'Halim', slot: '00-03',),
                                       SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
+                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){}, etat: 'Livrée', nCommande: '140925C00001', nClient: 'Halim', slot: '00-03',),
                                       SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
+                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){}, etat: 'Livrée', nCommande: '140925C00001', nClient: 'Halim', slot: '00-03',),
                                       SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
+                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){}, etat: 'Livrée', nCommande: '140925C00001', nClient: 'Halim', slot: '00-03',),
                                       SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
+                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){}, etat: 'Livrée', nCommande: '140925C00001', nClient: 'Halim', slot: '00-03',),
                                       SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
+                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){}, etat: 'Livrée', nCommande: '140925C00001', nClient: 'Halim', slot: '00-03',),
                                       SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
+                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){}, etat: 'Livrée', nCommande: '140925C00001', nClient: 'Halim', slot: '00-03',),
                                       SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
-                                      SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
-                                      SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
-                                      SizedBox(height: 10,),
-                                      FactureImprimerWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", onPressed: (){},),
-
-                                    ],),
+                                              ],),
                                 ),
                               ),
                               SizedBox(height: 30,),

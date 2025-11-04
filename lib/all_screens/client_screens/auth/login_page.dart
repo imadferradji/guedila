@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:qanaty/core/theme/app_style.dart';
-import 'package:qanaty/core/widget/facture_widget.dart';
-import 'package:qanaty/core/widget/facture_widget_plus_imprimer.dart';
+import 'package:qanaty/core/widget/commande_widget.dart';
+import 'package:qanaty/core/widget/commande_widget_plus_imprimer.dart';
 import 'package:qanaty/core/widget/side_bar_widget.dart';
 import 'package:qanaty/core/widget/solde_widget.dart';
 import 'package:qanaty/core/widget/virement_dialog.dart';
 import 'package:qanaty/core/widget/virement_widget.dart';
-import '../../core/widget/acount_widget.dart';
-import '../../core/widget/commander_produit_dialog.dart';
-import '../../core/widget/main_button.dart';
-import '../../core/widget/periode_selector.dart';
-import '../../core/widget/search_field.dart';
+
+import '../../../core/widget/main_button.dart';
+import '../../../core/widget/periode_selector.dart';
+import '../../../core/widget/search_field.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -67,19 +66,7 @@ class _LoginPageState extends State<LoginPage> {
                       etat: 'Validé',
                     ),
                     const SizedBox(height: 16),
-                    FactureWidget(quantite: "12 plt", produit: "0.5 L", livre: "Sep 16, 2020", pallete: "Oui", montant: "150000.00", date: "Sep 13, 2020", etat: "En attente"),
-                    const SizedBox(height: 16),
-                    FactureImprimerWidget(
-                      date: "Sep 16, 2020",
-                      quantite: "12 plt",
-                      produit: "0.5 L",
-                      montant: "220000.00",
-                      pallete: "Oui",
-                      livre: "Sep 16, 2020",
-                       onPressed: () {
-                        debugPrint("Bouton état cliqué !");
-                      },
-                    ),
+                     const SizedBox(height: 16),
                     const SizedBox(height: 16),
                     Text("NEW"),
                     const SizedBox(height: 16),

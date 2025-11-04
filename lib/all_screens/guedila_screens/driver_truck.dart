@@ -8,23 +8,22 @@ import 'package:qanaty/core/widget/chauffeur_widget.dart';
 import 'package:qanaty/core/widget/main_button.dart';
 import 'package:qanaty/core/widget/side_bar_widget.dart';
 import 'package:qanaty/data/camions.dart';
-import '../../core/theme/app_style.dart';
-import '../../core/widget/camion_widget.dart';
-import '../../core/widget/etat_facture_widget.dart';
-import '../../core/widget/facture_widget.dart';
-import '../../core/widget/facture_widget_plus_imprimer.dart';
-import '../../core/widget/search_field.dart';
-import '../../data/chauffeurs.dart';
+import '../../../core/theme/app_style.dart';
+import '../../../core/widget/camion_widget.dart';
+import '../../../core/widget/search_field.dart';
+import '../../../data/chauffeurs.dart';
+import '../../core/widget_guedila/acount_widget_company.dart';
+import '../../core/widget_guedila/side_bar.dart';
 
 
-class DriverTruckPage extends StatefulWidget {
+class DriverTruckPageC extends StatefulWidget {
   final String username="Oussama Bensbaa";
-  DriverTruckPage({Key? key}) : super(key: key);
+  DriverTruckPageC({Key? key}) : super(key: key);
   @override
-  State<DriverTruckPage> createState() => _DriverTruckPage();
+  State<DriverTruckPageC> createState() => _DriverTruckPageC();
 }
 
-class _DriverTruckPage extends State<DriverTruckPage> {
+class _DriverTruckPageC extends State<DriverTruckPageC> {
 
   final TextEditingController _controller = TextEditingController();
   TextEditingController dateFromController = TextEditingController();
@@ -89,7 +88,7 @@ class _DriverTruckPage extends State<DriverTruckPage> {
                         Container(
                             width:Responsive.sidebarWidth(adjustedWidth),
                             height:Responsive.sidebarHeight(adjustedHeight),
-                            child: SideBarWidget()
+                            child: SideBarWidgetC()
                         )
                         ,
                         SizedBox(width: paddingH,),
@@ -112,7 +111,7 @@ class _DriverTruckPage extends State<DriverTruckPage> {
                                     onPressed: () {
                                     },
                                   ),
-                                  AccountWidget(name: "Oussama Bensbaa", imageUrl: "assets/images/support.png"),
+                                  AccountWidgetC(name: "Oussama Bensbaa", imageUrl: "assets/images/support.png"),
                                   SizedBox(width: 16,),
                                 ],
                               ),
@@ -125,7 +124,7 @@ class _DriverTruckPage extends State<DriverTruckPage> {
                                 ],
                               ),
                               SizedBox(height: 20,),
-                                // Buttopn camion & chauffeur
+                              // Buttopn camion & chauffeur
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -140,27 +139,27 @@ class _DriverTruckPage extends State<DriverTruckPage> {
                                 ],
                               ),
                               SizedBox(height: 40,),
-                                //  nouveau button
+                              //  nouveau button
                               Align(
                                 alignment: Alignment.topRight,
-                                 child: MainButton(
-                              text: camioSide ? "Nouveau camion" : "Nouveau chauffeur",
-                                color: Appstyle.rose,
-                                onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    barrierDismissible: true,
-                                    barrierColor: Appstyle.blueF.withOpacity(0.3),
-                                    builder: (context) {
-                                      return camioSide
-                                          ? CamionDialog()   // ✅ si vrai → popup camion
-                                          : DriverDialog();  // ✅ si faux → popup chauffeur
-                                    },
-                                  );
-                                },
-                              ),
+                                child: MainButton(
+                                  text: camioSide ? "Nouveau camion" : "Nouveau chauffeur",
+                                  color: Appstyle.rose,
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      barrierDismissible: true,
+                                      barrierColor: Appstyle.blueF.withOpacity(0.3),
+                                      builder: (context) {
+                                        return camioSide
+                                            ? CamionDialog()   // ✅ si vrai → popup camion
+                                            : DriverDialog();  // ✅ si faux → popup chauffeur
+                                      },
+                                    );
+                                  },
+                                ),
 
-                        ),
+                              ),
                               SizedBox(height: 20,),
                               // mini Titre & search field
                               Row(
@@ -182,42 +181,43 @@ class _DriverTruckPage extends State<DriverTruckPage> {
                                 width: double.infinity,
                                 height: adjustedHeight*0.5,
                                 child: SingleChildScrollView(
-                                  child: camioSide?Column(
-                                    children: [
-                                      ...chauffeurs.expand((chauffeur) {
-                                        return [
-                                          ChauffeurWidget(
-                                            Nom: chauffeur.nom,
-                                            datenaissance: chauffeur.date,
-                                            npermis: chauffeur.npermis,
-                                            ntelephone: chauffeur.ntelephone,
-                                            etat: chauffeur.etat,
-                                          ),
-                                          const SizedBox(height: 10), // espace entre les lignes
-                                        ];
-                                      }).toList(),
-                                    ],
-                                  )
+                                    child: camioSide?
+                                    Column(
+                                      children: [
+                                        // La clé ici est d'utiliser .map() pour transformer chaque Camion en CamionWidget
+                                        ...camions.expand((camion) {
+                                          return [
+                                            CamionWidget(
+                                              Matricule: camion.Matricule,
+                                              MatriculeR: camion.Remorque, // Remorque est utilisé pour MatriculeR
+                                              tonnage: camion.tonnage,
+                                              etat: camion.etat,
+                                              type: camion.type, // Assurez-vous d'avoir ajouté 'type' dans votre CamionWidget
+                                            ),
+                                            const SizedBox(height: 10), // espace entre les widgets
+                                          ];
+                                        }).toList(),
+                                        // Convertir le résultat en List<Widget>
+                                      ],
+                                    )
+                                        :
+                                    Column(
+                                      children: [
+                                        ...chauffeurs.expand((chauffeur) {
+                                          return [
+                                            ChauffeurWidget(
+                                              Nom: chauffeur.nom,
+                                              datenaissance: chauffeur.date,
+                                              npermis: chauffeur.npermis,
+                                              ntelephone: chauffeur.ntelephone,
+                                              etat: chauffeur.etat,
+                                            ),
+                                            const SizedBox(height: 10), // espace entre les lignes
+                                          ];
+                                        }).toList(),
+                                      ],
+                                    )
 
-                                      :
-                                  Column(
-                                    children: [
-                                      // La clé ici est d'utiliser .map() pour transformer chaque Camion en CamionWidget
-                                      ...camions.expand((camion) {
-                                        return [
-                                          CamionWidget(
-                                            Matricule: camion.Matricule,
-                                            MatriculeR: camion.Remorque, // Remorque est utilisé pour MatriculeR
-                                            tonnage: camion.tonnage,
-                                            etat: camion.etat,
-                                            type: camion.type, // Assurez-vous d'avoir ajouté 'type' dans votre CamionWidget
-                                          ),
-                                          const SizedBox(height: 10), // espace entre les widgets
-                                        ];
-                                      }).toList(),
-                                      // Convertir le résultat en List<Widget>
-                                    ],
-                                  )
                                 ),
                               ),
                               SizedBox(height: 30,),

@@ -69,7 +69,7 @@ flutter:
       fonts:
         - asset: assets/fonts/NunitoSans.ttf
         - asset: assets/fonts/NunitoSans-Bold.ttf
-
+          weight: 700
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 

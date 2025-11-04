@@ -4,17 +4,18 @@ import 'package:qanaty/core/widget/acount_widget.dart';
 import 'package:qanaty/core/widget/main_button.dart';
 import 'package:qanaty/core/widget/periode_selector.dart';
 import 'package:qanaty/core/widget/side_bar_widget.dart';
-import '../../core/theme/app_style.dart';
-import '../../core/widget/bar_chart.dart';
-import '../../core/widget/commander_produit_dialog.dart';
-import '../../core/widget/pie_chart.dart';
-import '../../core/widget/produit_vendu_widget.dart';
-import '../../data/models/produit.dart';
-import '../../data/produits.dart';
+
+import '../../../core/theme/app_style.dart';
+import '../../../core/widget/bar_chart.dart';
+import '../../../core/widget/pie_chart.dart';
+import '../../../core/widget/produit_vendu_widget.dart';
+import '../../../core/widget/solde_widget.dart';
+import '../../../data/produits.dart';
 
 class DashboardPage extends StatefulWidget {
   final String username="Oussama Bensbaa";
    DashboardPage({Key? key}) : super(key: key);
+  final double solde = 100000.00;
 
   @override
   State<DashboardPage> createState() => _DashboardPageState();
@@ -116,7 +117,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                 Expanded(
                                   child: Column(
                                      children: [
-                                        // Notification & Compte
+                                       // Notification & Compte
                                        Row (
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                          children: [
@@ -142,11 +143,23 @@ class _DashboardPageState extends State<DashboardPage> {
 
 
                                       ),
-                                       // Text
 
-                                       Align(
-                                           alignment: Alignment.topLeft,
-                                           child: Text("Dashboard", style:Appstyle.textXL_B.copyWith(color: Appstyle.noir))),
+                                       // Text
+                                       // 🔹 Titre + Solde
+                                       Row(
+                                         mainAxisAlignment:
+                                         MainAxisAlignment.spaceBetween,
+                                         children: [
+                                           Text("Commande",
+                                               style: Appstyle.textXL_B
+                                                   .copyWith(color: Appstyle.noir)),
+                                           SoldeWidget(
+                                             solde: "${widget.solde}.00 DA",
+                                             dernier_modif: "24/02/2025",
+                                           ),
+                                         ],
+                                       ),
+
                                        SizedBox(height: paddingV,),
                                       // Periode & NEW Periode
 
@@ -164,7 +177,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
 
                                        // Produit circle
-                                  Wrap(
+                                       Wrap(
                                     spacing: paddingH * 0.8,
                                     runSpacing: 16,
                                     children: produits.map((produit) {

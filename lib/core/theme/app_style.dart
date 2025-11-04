@@ -6,7 +6,7 @@ class Appstyle
   static Color blueF = const Color(0XFF408CFE);
 
   static Color rose = const Color(0XFFF482D2);
-
+  static Color red = const Color(0xFFFF7671);
   static Color vert = const Color(0XFF34B233);
 
   static Color gris = const Color(0XFF7D8592);

@@ -173,7 +173,21 @@ class _DriverDialogState extends State<DriverDialog> {
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.grey)),
             ],
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: 20),
+
+          Center(
+            child: Container(
+              width: 120,
+              height: 80,
+              decoration: BoxDecoration(
+                color: Appstyle.blueC.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Appstyle.blueC),
+              ),
+              child: Icon(Icons.account_circle_outlined, size: 50, color: Appstyle.blueC),
+            ),
+          ),
+          const SizedBox(height: 20),
 
           _buildTextField(
             label: "Nom complet",

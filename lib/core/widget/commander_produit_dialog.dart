@@ -14,6 +14,8 @@ Map<Produit, int> panier = {};
 bool palette = false;
 String nom_chauffeur="";
 String matricule_camion="";
+String slot="";
+String datechargement="";
 bool chaufeur = false;
 double prix_palette = 10000.00;
 bool commande_confirme = false;
@@ -69,6 +71,8 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
   int currentIndex = 0;
   String? selectedChauffeur;
   String? selectedCamion;
+  String? selectedSlot;
+  DateTime? selectedDate;
 
   // ✅ Déclaration du contrôleur pour le carrousel
   late PageController _pageController;
@@ -123,12 +127,12 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
                     ),
                     Row(
                       children: [
-                        if (currentStep > 0 && currentStep < 4)
+                        if (currentStep > 0 && currentStep < 5)
                           TextButton(
                             onPressed: () => setState(() => currentStep--),
                             child: const Text("← Retour"),
                           ),
-                        if (currentStep == 4)
+                        if (currentStep == 5)
                           Expanded(
                             child: Center(
                               child: MainButton(
@@ -145,7 +149,7 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
                         else ...[
                           const Spacer(),
                           MainButton(
-                            text: currentStep == 3 ? "Payer" : "Suivant",
+                            text: currentStep == 4 ? "Payer" : "Suivant",
                             icon: Icons.arrow_forward,
                             iconOnRight: true,
                             color: Appstyle.rose,
@@ -164,9 +168,9 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
                                     ),
                                   );
                                 }
-                              } else if (currentStep < 3) {
+                              } else if (currentStep < 4) {
                                 setState(() => currentStep++);
-                              } else if (currentStep == 3) {
+                              } else if (currentStep == 4) {
                                 setState(() => currentStep++);
                                 if (widget.solde >= totalCommande) {
                                   commande_confirme = true;
@@ -199,8 +203,10 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
       case 2:
         return _buildStep2Palette();
       case 3:
-        return _buildStep3Confirmation();
+        return _buildStep3dateslot();
       case 4:
+        return _buildStep3Confirmation();
+      case 5:
         return _buildStep4Confirmation();
       default:
         return const SizedBox.shrink();
@@ -323,15 +329,38 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
                 ),
                 Container(
                   width: 60,
-                  alignment: Alignment.center,
-                  child: Text(
-                    "$quantite",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  child: TextField(
+                    textAlign: TextAlign.center,
+                    keyboardType: TextInputType.number,
+                    controller: TextEditingController(text: quantite.toString()),
+                    onChanged: (value) {
+                      int? newValue = int.tryParse(value);
+                      if (newValue != null) {
+                        if (newValue > 24) {
+                          newValue = 24; // 🔒 Limite automatique à 24
+                        } else if (newValue < 0) {
+                          newValue = 0; // 🔒 Évite les valeurs négatives
+                        }
+                        setState(() => panier[produit] = newValue!);
+                      }
+                    },
+
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      isDense: true,
+                      contentPadding: EdgeInsets.symmetric(vertical: 8),
+                    ),
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
                 IconButton(
                   onPressed: () {
-                    setState(() => panier[produit] = quantite + 1);
+                    if (quantite < 24) {
+                      setState(() => panier[produit] = quantite + 1);
+                    }
                   },
                   icon: Icon(Icons.add_circle, size: 32, color: Appstyle.blueF),
                 ),
@@ -415,6 +444,10 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
             Text(
               "${totalnombrepalette.toStringAsFixed(0)}",
               style: Appstyle.textM_B.copyWith(color: Appstyle.blueF),
+            ),
+            Text(
+              " / 24",
+              style: Appstyle.textM_B.copyWith(color: Appstyle.noir),
             ),
           ],
         ),
@@ -739,7 +772,7 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
               ],
             ),
 
-            const SizedBox(height: 180),
+            const SizedBox(height: 365),
 
             // --- Total commande ---
              ],
@@ -765,6 +798,176 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
           ],
         ),
       ],
+    );
+  }
+  /// Étape 4 : Date & Slot
+  Widget _buildStep3dateslot() {
+
+    // Map des créneaux avec disponibilité
+    final Map<String, bool> slotsDisponibilite = {
+      "00:00 - 03:00": true,
+      "03:00 - 06:00": false,
+      "06:00 - 09:00": true,
+      "09:00 - 12:00": true,
+      "12:00 - 15:00": false,
+      "15:00 - 18:00": true,
+      "18:00 - 21:00": true,
+      "21:00 - 00:00": true,
+    };
+
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // --- Titre ---
+            Text(
+              "Nouvelle commande",
+              style: Appstyle.textS_B.copyWith(color: Appstyle.noir),
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Image.asset(
+                  "assets/icons/time_icon.png",
+                  width: 20,
+                  height: 20,
+                  fit: BoxFit.contain,
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  "Date & Slot",
+                  style: Appstyle.textS_B.copyWith(color: Appstyle.gris),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+
+            // --- Sélecteur de date ---
+            Text(
+              "Sélectionnez une date de livraison :",
+              style: Appstyle.textS_B.copyWith(color: Appstyle.grisC),
+            ),
+            const SizedBox(height: 10),
+            GestureDetector(
+              onTap: () async {
+                final DateTime? picked = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime.now(),
+                  lastDate: DateTime.now().add(const Duration(days: 15)),
+                );
+                if (picked != null) {
+                  setState(() => selectedDate = picked);
+                }
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      selectedDate == null
+                          ? "Choisir une date"
+                          : "${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}",
+                      style: Appstyle.textS_B.copyWith(
+                        color:
+                        selectedDate == null ? Colors.grey : Appstyle.noir,
+                      ),
+                    ),
+                    const Icon(Icons.calendar_today, color: Colors.grey),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 30),
+
+            // --- Sélecteur de slot ---
+            Text(
+              "Sélectionnez un créneau horaire :",
+              style: Appstyle.textS_B.copyWith(color: Appstyle.grisC),
+            ),
+            const SizedBox(height: 10),
+
+            // --- Grille centrée avec deux slots par ligne ---
+            Center(
+              child: SizedBox(
+                width: 400,
+                child: GridView.count(
+                  crossAxisCount: 2,
+                  shrinkWrap: true,
+                  mainAxisSpacing: 10,
+                  crossAxisSpacing: 10,
+                  physics: const NeverScrollableScrollPhysics(),
+                  childAspectRatio: 3.5,
+                  children: slotsDisponibilite.entries.map((entry) {
+                    final slot = entry.key;
+                    final dispo = entry.value;
+                    final bool selected = slot == selectedSlot;
+
+                    Color backgroundColor;
+                    Color textColor = Appstyle.noir;
+
+                    if (!dispo) {
+                      backgroundColor = Colors.grey.shade300; // gris clair indispo
+                    } else if (selected) {
+                      backgroundColor = Appstyle.rose; // rose sélectionné
+                      textColor = Colors.white;
+                    } else {
+                      backgroundColor = Colors.grey.shade600; // gris foncé dispo
+                      textColor = Colors.white;
+                    }
+
+                    return GestureDetector(
+                      onTap: dispo
+                          ? () => setState(() => selectedSlot = slot)
+                          : null,
+                      child: Container(
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: backgroundColor,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: selected ? Appstyle.rose : Colors.transparent,
+                            width: 2,
+                          ),
+                        ),
+                        child: Text(
+                          slot,
+                          style: Appstyle.textS_B.copyWith(color: textColor),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 200),
+
+            // --- Total commande ---
+            Row(
+              children: [
+                Text(
+                  "Total de commande :",
+                  style: Appstyle.textM_B.copyWith(color: Appstyle.gris),
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  "${totalCommande.toStringAsFixed(2)} DA",
+                  style: Appstyle.textM_B.copyWith(color: Appstyle.blueF),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -921,6 +1124,36 @@ class _CommanderProduitDialog extends State<CommanderProduitDialog> {
                 ],
               ),
             ],
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Text(
+                  "Slot : ",
+                  style: Appstyle.textS_B.copyWith(color: Appstyle.grisC),
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  selectedSlot!,
+                  style: Appstyle.textS_B.copyWith(color: Appstyle.noir),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Text(
+                  "Date : ",
+                  style: Appstyle.textS_B.copyWith(color: Appstyle.grisC),
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  selectedDate.toString(),
+                  style: Appstyle.textS_B.copyWith(color: Appstyle.noir),
+                ),
+              ],
+            ),
+
+
           ],
         ),
       ],

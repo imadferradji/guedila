@@ -71,7 +71,7 @@ class VirementWidget extends StatelessWidget {
 
               children: [
                 Text(
-                  numero, // "0.33Cl"
+                  numero,
                   style: Appstyle.textM_B.copyWith(color: Appstyle.noir),
                   textAlign: TextAlign.center,
                 ),
@@ -79,19 +79,19 @@ class VirementWidget extends StatelessWidget {
                 const SizedBox(height: 6),
                 // Texte du bas
                 Text(
-                  montant, // "181 Palette"
+                  montant,
                   style: Appstyle.textL_B.copyWith(color: Appstyle.blueF),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  date, // "181 Palette"
+                  date,
                   style: Appstyle.textM_B.copyWith(color: Appstyle.noir),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  etat, // "181 Palette"
+                  etat,
                   style: etat=="En attente"?Appstyle.textM_B.copyWith(color: Appstyle.gold):Appstyle.textM_B.copyWith(color: Appstyle.vert),
                   textAlign: TextAlign.center,
                 ),

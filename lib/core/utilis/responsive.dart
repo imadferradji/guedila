@@ -3,7 +3,7 @@ class Responsive {
     return (screenWidth * 0.13).clamp(250, 350);
   }
   static double sidebarHeight(double screenHeight) {
-    return (screenHeight * 1).clamp(700, 1200);
+    return (screenHeight * 1).clamp(800, 1300);
   }
   static double notificationSize(double screenHeight) {
     return (screenHeight * 0.04).clamp(22, 50);
@@ -20,6 +20,14 @@ class Responsive {
   static double virementWidth(double screenHeight) {
     return (screenHeight * 0.23).clamp(350, 420);
   }
-
-
+  static double StatusWidthS(double screenWidth) {
+    return (screenWidth * 0.1).clamp(150, 350);
+  }static double StatusWidthM(double screenWidth) {
+    return (screenWidth * 0.2).clamp(150, 350);
+  }static double StatusWidthL(double screenWidth) {
+    return (screenWidth * 0.26).clamp(150, 450);
+  }
+  static double StatusHeight(double screenHeight) {
+    return (screenHeight * 0.3).clamp(350, 420);
+  }
 }
